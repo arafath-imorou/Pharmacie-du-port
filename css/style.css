@@ -342,8 +342,8 @@ section.bg-light {
 }
 
 .logo-img {
-    height: 70px;
-    /* Taille optimale pour l'en-tête */
+    height: 90px;
+    /* Taille optimale après retrait du texte */
     width: auto;
     object-fit: contain;
     transition: var(--transition);
