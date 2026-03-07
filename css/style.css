@@ -3666,6 +3666,81 @@ footer {
     /* Rendre le logo blanc pour le footer sombre */
 }
 
+/* --- Floating WhatsApp Button --- */
+.whatsapp-float {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: #25D366;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+    z-index: 2000;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: whatsapp-pulse 2s infinite;
+}
+
+.whatsapp-float:hover {
+    transform: scale(1.1) translateY(-5px);
+    background-color: #128C7E;
+    color: white;
+    box-shadow: 0 10px 25px rgba(37, 211, 102, 0.5);
+}
+
+.whatsapp-float img {
+    width: 28px;
+    height: 28px;
+    filter: brightness(0) invert(1);
+}
+
+@keyframes whatsapp-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4);
+    }
+
+    70% {
+        box-shadow: 0 0 0 15px rgba(37, 211, 102, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+    }
+}
+
+@media (max-width: 480px) {
+    .whatsapp-float {
+        bottom: 20px;
+        right: 20px;
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+
+    .whatsapp-float span {
+        display: none;
+        /* Cache le texte sur mobile pour ne laisser que l'icône si besoin, ou on garde le texte si court */
+    }
+
+    /* Si on veut garder juste le bouton rond sur mobile */
+    .whatsapp-float {
+        width: 60px;
+        height: 60px;
+        padding: 0;
+        justify-content: center;
+        border-radius: 50%;
+    }
+
+    .whatsapp-float span {
+        display: none;
+    }
+}
+
 /* --- Global Mobile Refinements (iPhone/Android) --- */
 @media (max-width: 480px) {
     .logo-v3 {

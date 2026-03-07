@@ -82,4 +82,20 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // WhatsApp Floating Button Injection
+    const injectWhatsAppButton = () => {
+        const waButton = document.createElement('a');
+        waButton.href = 'https://wa.me/0194013991';
+        waButton.className = 'whatsapp-float';
+        waButton.target = '_blank';
+        waButton.rel = 'noopener noreferrer';
+        waButton.innerHTML = `
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+            <span>WhatsApp</span>
+        `;
+        document.body.appendChild(waButton);
+    };
+
+    injectWhatsAppButton();
 });
