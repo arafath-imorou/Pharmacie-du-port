@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(waButton);
     };
 
-    // On-Call Countdown Logic
+    // On-Call Countdown Logic (Automated 1 week on / 1 week off cycle)
     const initOnCallCountdown = () => {
         const statusBadge = document.getElementById('on-call-status-badge');
         const statusText = document.getElementById('on-call-status-text');
@@ -108,29 +108,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!statusBadge || !statusText) return;
 
-        // Hardcoded target for demonstration (End of current guard week)
-        // In a real scenario, this would come from Supabase
-        const targetDate = new Date('2026-03-10T08:00:00').getTime();
+        // Reference: Sunday March 1st, 2026 00:00 (Start of an ON-CALL week)
+        const referenceDate = new Date('2026-03-01T00:00:00').getTime();
+        const oneWeekMs = 7 * 24 * 60 * 60 * 1000;
 
         const updateCountdown = () => {
             const now = new Date().getTime();
-            const distance = targetDate - now;
+            const timeDiff = now - referenceDate;
 
-            if (distance < 0) {
-                // Not on call anymore
+            // Calculate how many weeks passed since reference
+            const weeksPassed = Math.floor(timeDiff / oneWeekMs);
+            const isOnCallWeek = weeksPassed % 2 === 0;
+
+            // Calculate start and end of the current 1-week block
+            const currentPeriodStart = referenceDate + (weeksPassed * oneWeekMs);
+            const nextPeriodStart = currentPeriodStart + oneWeekMs;
+
+            const distance = nextPeriodStart - now;
+
+            if (isOnCallWeek) {
+                // Currently on call
+                statusBadge.classList.add('status-active');
+                statusText.innerText = "EN GARDE CETTE SEMAINE";
+                countdownLabel.innerText = "Fin de la garde dans :";
+                statusBadge.style.background = "#dcfce7";
+                statusBadge.style.color = "#16a34a";
+            } else {
+                // Not on call
                 statusBadge.classList.remove('status-active');
                 statusText.innerText = "PAS DE GARDE ACTUELLEMENT";
                 countdownLabel.innerText = "Prochaine garde dans :";
-                // For demo, we just set a future date if past
-                return;
+                statusBadge.style.background = "#fee2e2";
+                statusBadge.style.color = "#ef4444";
             }
 
-            // Currently on call
-            statusBadge.classList.add('status-active');
-            statusText.innerText = "EN GARDE CETTE SEMAINE";
-            countdownLabel.innerText = "Fin de la garde dans :";
-
-            // Calculations
+            // Calculations for display
             const days = Math.floor(distance / (1000 * 60 * 60 * 24));
             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
@@ -142,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         updateCountdown();
-        setInterval(updateCountdown, 60000); // Update every minute
+        setInterval(updateCountdown, 60000); // UI update every minute
     };
 
     injectWhatsAppButton();
