@@ -456,10 +456,12 @@ section.bg-light {
 
 /* Hero Section */
 .hero {
-    padding-top: 250px;
-    /* Standard desktop offset */
-    padding-bottom: 8rem;
-    min-height: 80vh;
+    padding-top: 260px;
+    /* Added more offset for the thick header */
+    padding-bottom: 10rem;
+    /* Increased breathing room at bottom */
+    min-height: 85vh;
+    /* Slightly taller hero */
     background: url('../img/ACCUEIL.jpeg') center/cover no-repeat;
     position: relative;
     overflow: hidden;
@@ -560,8 +562,11 @@ section.bg-light {
 
     .hero {
         text-align: center;
-        padding-top: 150px;
-        min-height: auto;
+        padding-top: 180px;
+        /* More space for mobile header */
+        padding-bottom: 6rem;
+        min-height: 70vh;
+        /* Ensure mobile hero has presence */
     }
 
     .hero-content {
@@ -1276,8 +1281,10 @@ footer {
 /* Page Banner */
 .page-banner {
     background-color: var(--primary-color);
-    padding: 220px 0 4rem;
-    /* Standard desktop offset */
+    padding: 260px 0 8rem;
+    /* Increased offset and vertical space */
+    min-height: 500px;
+    /* Locked minimum height to prevent "shrunk" look */
     text-align: center;
     color: var(--white);
     position: relative;
@@ -3852,7 +3859,8 @@ footer {
     }
 
     .page-banner {
-        padding-top: 150px;
+        padding: 180px 0 5rem;
+        min-height: 400px;
     }
 }
 
