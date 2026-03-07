@@ -82,7 +82,8 @@
                     <a href="#" class="icon-btn hide-mobile"><span class="material-symbols-rounded">person</span></a>
                     <a href="order.html" class="icon-btn"><span
                             class="material-symbols-rounded">shopping_cart</span></a>
-                    <button class="mobile-menu-btn" aria-label="Menu">
+                    <button class="mobile-menu-btn" aria-label="Menu"
+                        onclick="var nav=document.querySelector('.nav-v3');nav.classList.toggle('active');this.querySelector('.material-symbols-rounded').textContent=nav.classList.contains('active')?'close':'menu';">
                         <span class="material-symbols-rounded">menu</span>
                     </button>
                 </div>
