@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Mobile Menu Toggle
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-    const nav = document.querySelector('nav');
+    const nav = document.querySelector('.nav-v3');
 
     if (mobileMenuBtn && nav) {
         mobileMenuBtn.addEventListener('click', () => {
@@ -12,6 +12,15 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 icon.textContent = 'menu';
             }
+        });
+
+        // Close menu when a link is clicked
+        nav.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                nav.classList.remove('active');
+                const icon = mobileMenuBtn.querySelector('.material-symbols-rounded');
+                if (icon) icon.textContent = 'menu';
+            });
         });
     }
 

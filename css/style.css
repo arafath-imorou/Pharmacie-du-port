@@ -398,6 +398,7 @@ section.bg-light {
 /* Tier 3: Main Navigation */
 .main-header-v3 {
     background-color: var(--primary-color);
+    position: relative;
 }
 
 .nav-v3 {
@@ -590,9 +591,8 @@ section.bg-light {
 
     .nav-v3.active ul {
         transform: translateY(0);
-        /* Make it valid via JS toggle */
         opacity: 1;
-        z-index: 999;
+        z-index: 9999;
     }
 
     .nav-v3 a {
@@ -615,6 +615,8 @@ section.bg-light {
     .main-header-v3 {
         background: transparent;
         padding: 0;
+        position: relative;
+        overflow: visible;
     }
 
     .top-ticker-content {
