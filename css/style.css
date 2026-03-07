@@ -686,7 +686,7 @@ section.bg-light {
 /* Services Overview */
 .service-card {
     background-color: var(--white);
-    padding: 2rem;
+    padding: 1.25rem 1.5rem;
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
     transition: var(--transition);
@@ -699,20 +699,20 @@ section.bg-light {
 }
 
 .service-card .material-symbols-rounded {
-    font-size: 2.5rem;
+    font-size: 2rem;
     color: var(--primary-color);
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .service-card h3 {
     font-size: 1.2rem;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.4rem;
 }
 
 .service-card p {
     color: var(--text-light);
     font-size: 0.95rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.75rem;
 }
 
 .service-link {
