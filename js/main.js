@@ -1,4 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Dismiss Preloader
+    const preloader = document.getElementById('site-preloader');
+    const dismissPreloader = () => {
+        if (preloader) {
+            preloader.classList.add('fade-out');
+            document.body.classList.remove('loading');
+        }
+    };
+
+    // Ensure preloader is gone even if something hangs
+    window.addEventListener('load', dismissPreloader);
+    setTimeout(dismissPreloader, 3000); // Max wait 3 seconds
+
     // Navigation logic handled by inline onclick in HTML for maximum compatibility
     // (See .mobile-menu-btn in HTML files)
 
