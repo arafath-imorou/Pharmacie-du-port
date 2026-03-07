@@ -69,7 +69,7 @@
                     <a href="#" class="icon-btn hide-mobile"><span class="material-symbols-rounded">person</span></a>
                     <a href="order.html" class="icon-btn"><span
                             class="material-symbols-rounded">shopping_cart</span></a>
-                    <button class="mobile-menu-btn" aria-label="Menu" onclick="var nav=document.querySelector(`".nav-v3`");nav.classList.toggle(`"active`");this.querySelector(`".material-symbols-rounded`").textContent=nav.classList.contains(`"active`")?`"close`":`"menu`";">
+                    <button class="mobile-menu-btn" aria-label="Menu" onclick="var n=document.getElementById('mobileNav'); n.classList.toggle('active'); this.querySelector('.material-symbols-rounded').textContent=n.classList.contains('active')?'close':'menu';".nav-v3`");nav.classList.toggle(`"active`");this.querySelector(`".material-symbols-rounded`").textContent=nav.classList.contains(`"active`")?`"close`":`"menu`";">
                         <span class="material-symbols-rounded">menu</span>
                     </button>
                 </div>
@@ -79,7 +79,7 @@
         <!-- Main Navigation -->
         <header class="main-header-v3">
             <div class="container">
-                <nav class="nav-v3">
+                <nav class="nav-v3" id="mobileNav">
                     <ul id="mainMenu">
                         <li><a href="index.html">Accueil</a></li>
                         <li><a href="about.html">À Propos</a></li>

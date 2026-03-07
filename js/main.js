@@ -1,28 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Mobile Menu Toggle
-    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-    const nav = document.querySelector('.nav-v3');
-
-    if (mobileMenuBtn && nav) {
-        mobileMenuBtn.addEventListener('click', () => {
-            nav.classList.toggle('active');
-            const icon = mobileMenuBtn.querySelector('.material-symbols-rounded');
-            if (nav.classList.contains('active')) {
-                icon.textContent = 'close';
-            } else {
-                icon.textContent = 'menu';
-            }
-        });
-
-        // Close menu when a link is clicked
-        nav.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                nav.classList.remove('active');
-                const icon = mobileMenuBtn.querySelector('.material-symbols-rounded');
-                if (icon) icon.textContent = 'menu';
-            });
-        });
-    }
+    // Navigation logic handled by inline onclick in HTML for maximum compatibility
+    // (See .mobile-menu-btn in HTML files)
 
     // Header Scroll Effect
     const headerWrapper = document.querySelector('.header-wrapper');
