@@ -1,0 +1,384 @@
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- Tabs Logic ---
+    const tabs = document.querySelectorAll('.order-tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tabContents.forEach(content => content.classList.add('hidden'));
+
+            tab.classList.add('active');
+            const targetId = tab.getAttribute('data-target');
+            document.getElementById(targetId).classList.remove('hidden');
+        });
+    });
+
+    // --- Prescription Upload Logic ---
+    const prescriptionFile = document.getElementById('prescriptionFile');
+    const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+    const prescriptionPreview = document.getElementById('prescriptionPreview');
+    const previewImg = document.getElementById('previewImg');
+    const removeFile = document.getElementById('removeFile');
+
+    if (prescriptionFile) {
+        prescriptionFile.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    previewImg.src = event.target.result;
+                    uploadPlaceholder.classList.add('hidden');
+                    prescriptionPreview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    if (removeFile) {
+        removeFile.addEventListener('click', () => {
+            prescriptionFile.value = '';
+            uploadPlaceholder.classList.remove('hidden');
+            prescriptionPreview.classList.add('hidden');
+            previewImg.src = '';
+        });
+    }
+
+    // --- Product Search & Basket Logic ---
+    const basket = [];
+    const productSearch = document.getElementById('productSearch');
+    const productSuggestions = document.getElementById('productSuggestions');
+    const basketItems = document.getElementById('basketItems');
+    const basketSummary = document.getElementById('basketSummary');
+    const basketTotalAmount = document.getElementById('basketTotalAmount');
+
+    const products = typeof productsDb !== 'undefined' ? productsDb : [];
+
+    function showSuggestions(query = '') {
+        const filtered = query === ''
+            ? products
+            : products.filter(p =>
+                p.name.toLowerCase().includes(query) ||
+                p.category.toLowerCase().includes(query)
+            );
+
+        if (filtered.length > 0) {
+            productSuggestions.innerHTML = filtered.map(p => `
+                <div class="suggestion-item" data-id="${p.id}">
+                    <span class="prod-name">${p.name}</span>
+                    <span class="prod-price">${p.price}</span>
+                </div>
+            `).join('');
+            productSuggestions.classList.remove('hidden');
+        } else {
+            productSuggestions.innerHTML = '<div class="suggestion-item">Aucun produit trouvé</div>';
+            productSuggestions.classList.remove('hidden');
+        }
+    }
+
+    if (productSearch) {
+        productSearch.addEventListener('focus', () => {
+            showSuggestions(productSearch.value.toLowerCase().trim());
+        });
+
+        productSearch.addEventListener('input', (e) => {
+            showSuggestions(e.target.value.toLowerCase().trim());
+        });
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!productSearch.contains(e.target) && !productSuggestions.contains(e.target)) {
+                productSuggestions.classList.add('hidden');
+            }
+        });
+
+        // Add to basket
+        productSuggestions.addEventListener('click', (e) => {
+            const item = e.target.closest('.suggestion-item');
+            if (item && item.dataset.id) {
+                const id = parseInt(item.dataset.id);
+                const product = products.find(p => p.id === id);
+                if (product) {
+                    addToBasket(product);
+                    productSearch.value = '';
+                    productSuggestions.classList.add('hidden');
+                }
+            }
+        });
+    }
+
+    function addToBasket(product) {
+        const existing = basket.find(item => item.id === product.id);
+        if (existing) {
+            existing.quantity++;
+        } else {
+            basket.push({ ...product, quantity: 1 });
+        }
+        renderBasket();
+    }
+
+    function removeFromBasket(id) {
+        const index = basket.findIndex(item => item.id === id);
+        if (index !== -1) {
+            basket.splice(index, 1);
+        }
+        renderBasket();
+    }
+
+    function updateQuantity(id, delta) {
+        const item = basket.find(i => i.id === id);
+        if (item) {
+            item.quantity += delta;
+            if (item.quantity <= 0) {
+                removeFromBasket(id);
+            } else {
+                renderBasket();
+            }
+        }
+    }
+
+    function renderBasket() {
+        if (basket.length === 0) {
+            basketItems.innerHTML = '<p class="empty-basket-text">Votre panier est vide. Sélectionnez des produits ci-dessus.</p>';
+            basketSummary.classList.add('hidden');
+            return;
+        }
+
+        basketItems.innerHTML = basket.map(item => `
+            <div class="basket-item">
+                <div class="basket-item-info">
+                    <span class="basket-item-name">${item.name}</span>
+                    <span class="basket-item-price">${item.price}</span>
+                </div>
+                <div class="basket-item-actions">
+                    <div class="quantity-controls">
+                        <button type="button" class="qty-btn" onclick="updateQty(${item.id}, -1)">
+                            <span class="material-symbols-rounded">remove</span>
+                        </button>
+                        <span class="qty-val">${item.quantity}</span>
+                        <button type="button" class="qty-btn" onclick="updateQty(${item.id}, 1)">
+                            <span class="material-symbols-rounded">add</span>
+                        </button>
+                    </div>
+                    <button type="button" class="btn-remove-item" onclick="removeProduct(${item.id})">
+                        <span class="material-symbols-rounded">delete</span>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+
+        basketSummary.classList.remove('hidden');
+
+        let total = 0;
+        basket.forEach(item => {
+            const price = parseInt(item.price.replace(/[^0-9]/g, ''));
+            total += price * item.quantity;
+        });
+        basketTotalAmount.textContent = total.toLocaleString() + ' FCFA';
+    }
+
+    window.updateQty = (id, delta) => updateQuantity(id, delta);
+    window.removeProduct = (id) => removeFromBasket(id);
+
+    // --- Delivery Logic ---
+    const deliveryMethod = document.getElementById('deliveryMethod');
+    const addressGroup = document.getElementById('addressGroup');
+    const deliveryAddress = document.getElementById('deliveryAddress');
+
+    if (deliveryMethod) {
+        deliveryMethod.addEventListener('change', (e) => {
+            if (e.target.value === 'delivery') {
+                addressGroup.classList.remove('hidden');
+                deliveryAddress.setAttribute('required', 'required');
+            } else {
+                addressGroup.classList.add('hidden');
+                deliveryAddress.removeAttribute('required');
+                deliveryAddress.value = '';
+            }
+        });
+    }
+
+    // --- Modal Configuration ---
+    const modal = document.getElementById('orderConfirmationModal');
+    const confirmBtn = document.getElementById('confirmSubmitBtn');
+    const editBtn = document.getElementById('editOrderBtn');
+    const closeModal = document.getElementById('closeConfirmationModal');
+    const confirmationDetails = document.getElementById('confirmationDetails');
+
+    let finalMessage = '';
+
+    function showConfirmationModal() {
+        const fullName = document.getElementById('fullName').value;
+        const phone = document.getElementById('phone').value;
+        const activeTab = document.querySelector('.order-tab.active').getAttribute('data-target');
+
+        let orderSummaryHtml = '';
+        let orderSummaryText = '';
+
+        if (activeTab === 'prescription-panel') {
+            if (prescriptionFile.files.length === 0) {
+                alert('Veuillez charger votre ordonnance.');
+                return;
+            }
+            orderSummaryHtml = `
+                <div class="recap-row">
+                    <span class="label">Type de commande :</span>
+                    <span>Ordonnance (Photo)</span>
+                </div>
+                <div class="recap-row">
+                    <span class="label">Notes :</span>
+                    <span>${document.getElementById('prescriptionNotes').value || 'Aucune'}</span>
+                </div>
+            `;
+            orderSummaryText = `*Type:* Ordonnance (Photo ci-jointe)\n*Notes:* ${document.getElementById('prescriptionNotes').value || 'Aucune'}`;
+        } else {
+            if (basket.length === 0) {
+                alert('Votre panier est vide. Veuillez choisir des produits.');
+                return;
+            }
+            const itemsHtml = basket.map(item => `
+                <div class="recap-item">
+                    <span>${item.name} (x${item.quantity})</span>
+                    <span>${item.price}</span>
+                </div>
+            `).join('');
+
+            orderSummaryHtml = `
+                <div class="recap-row">
+                    <span class="label">Type de commande :</span>
+                    <span>Liste de produits</span>
+                </div>
+                <div class="recap-items">
+                    ${itemsHtml}
+                </div>
+                <div class="recap-total">
+                    <span>TOTAL ESTIMÉ</span>
+                    <span>${basketTotalAmount.textContent}</span>
+                </div>
+            `;
+
+            const itemsListText = basket.map(item => `- ${item.name} (x${item.quantity}) - ${item.price}`).join('\n');
+            orderSummaryText = `*Type:* Commande de produits\n*Produits:*\n${itemsListText}\n\n*TOTAL :* ${basketTotalAmount.textContent}`;
+        }
+
+        const deliveryOption = document.getElementById('deliveryMethod').selectedOptions[0].text;
+        const address = document.getElementById('deliveryAddress').value;
+        const payment = document.getElementById('paymentMethod').selectedOptions[0].text;
+
+        const deliveryText = document.getElementById('deliveryMethod').value === 'pickup' ?
+            'Retrait en pharmacie (Gratuit)' :
+            `Livraison à domicile\n*Adresse:* ${address}`;
+
+        let html = `
+            <div class="recap-section">
+                <h4>Informations Personnelles</h4>
+                <div class="recap-row"><span class="label">Nom :</span> <span>${fullName}</span></div>
+                <div class="recap-row"><span class="label">Téléphone :</span> <span>${phone}</span></div>
+            </div>
+            <div class="recap-section">
+                <h4>Détails de la Commande</h4>
+                ${orderSummaryHtml}
+            </div>
+            <div class="recap-section">
+                <h4>Réception & Paiement</h4>
+                <div class="recap-row"><span class="label">Mode :</span> <span>${deliveryOption}</span></div>
+                ${address ? `<div class="recap-row"><span class="label">Adresse :</span> <span>${address}</span></div>` : ''}
+                <div class="recap-row"><span class="label">Paiement :</span> <span>${payment}</span></div>
+            </div>
+        `;
+
+        confirmationDetails.innerHTML = html;
+
+        finalMessage = `*COMMANDE EN LIGNE - PHARMACIE DU PORT*\n\n`;
+        finalMessage += `*CLIENT :* ${fullName}\n`;
+        finalMessage += `*TEL :* ${phone}\n\n`;
+        finalMessage += `${orderSummaryText}\n\n`;
+        finalMessage += `*MODE DE RÉCEPTION :* ${deliveryText}\n`;
+        finalMessage += `*MODE DE PAIEMENT :* ${payment}\n\n`;
+        finalMessage += `_Merci de confirmer ma commande._`;
+
+        modal.classList.remove('hidden');
+    }
+
+    if (editBtn) editBtn.addEventListener('click', () => modal.classList.add('hidden'));
+    if (closeModal) closeModal.addEventListener('click', () => modal.classList.add('hidden'));
+
+    if (confirmBtn) {
+        confirmBtn.addEventListener('click', async () => {
+            const originalBtnHtml = confirmBtn.innerHTML;
+            confirmBtn.innerHTML = 'Traitement...';
+            confirmBtn.disabled = true;
+
+            // Gather Data
+            const fullName = document.getElementById('fullName').value;
+            const phone = document.getElementById('phone').value;
+            const deliveryMethodStr = document.getElementById('deliveryMethod').value;
+            const deliveryAddress = document.getElementById('deliveryAddress').value;
+            const paymentMethod = document.getElementById('paymentMethod').selectedOptions[0].text;
+            const activeTab = document.querySelector('.order-tab.active').getAttribute('data-target');
+            const prescriptionNotes = document.getElementById('prescriptionNotes') ? document.getElementById('prescriptionNotes').value : '';
+            const totalPrice = basketTotalAmount ? basketTotalAmount.textContent : '0';
+
+            try {
+                // 1. Save main order to Supabase
+                const { data: orderData, error: orderError } = await window.supabase.from('orders').insert([
+                    {
+                        client_name: fullName,
+                        client_phone: phone,
+                        delivery_method: deliveryMethodStr,
+                        delivery_address: deliveryAddress,
+                        payment_method: paymentMethod,
+                        prescription_notes: activeTab === 'prescription-panel' ? prescriptionNotes : null,
+                        total_price: activeTab !== 'prescription-panel' ? totalPrice : 'N/A'
+                    }
+                ]).select(); // select() is needed to return the ID of the created row
+
+                if (orderError) throw orderError;
+
+                // 2. Save order items if it's a catalog order
+                if (orderData && orderData.length > 0) {
+                    const newOrderId = orderData[0].id;
+                    if (activeTab === 'catalog-panel' && basket.length > 0) {
+                        const itemsToInsert = basket.map(item => ({
+                            order_id: newOrderId,
+                            product_name: item.name,
+                            quantity: item.quantity,
+                            price: item.price
+                        }));
+
+                        const { error: itemsError } = await window.supabase.from('order_items').insert(itemsToInsert);
+                        if (itemsError) throw itemsError;
+                    }
+                }
+
+                // 3. Open WhatsApp and close modal
+                const whatsappNumber = '0194013991';
+                window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(finalMessage)}`, '_blank');
+                modal.classList.add('hidden');
+
+            } catch (err) {
+                console.error("Erreur d'enregistrement Supabase :", err);
+                alert("Une erreur de réseau s'est produite, mais vous allez être redirigé vers WhatsApp pour finaliser.");
+
+                // Fallback to WhatsApp even if DB fails
+                const whatsappNumber = '0194013991';
+                window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(finalMessage)}`, '_blank');
+                modal.classList.add('hidden');
+            } finally {
+                confirmBtn.innerHTML = originalBtnHtml;
+                confirmBtn.disabled = false;
+            }
+        });
+    }
+
+    // --- WhatsApp Form Submission ---
+    const orderForm = document.getElementById('pharmacyOrderForm');
+    if (orderForm) {
+        orderForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            showConfirmationModal();
+        });
+    }
+});

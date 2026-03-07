@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conseils Santé & Blog | Pharmacie du Port – Cotonou</title>
+    <meta name="description"
+        content="Découvrez nos conseils santé adaptés à Cotonou : prévention du paludisme, hygiène, nutrition et santé en saison des pluies.">
+
+    <!-- Performance: Resource Hints -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="css/style.css" as="style">
+    <link rel="preload" href="img/ACCUEIL.jpeg" as="image" fetchpriority="high">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="bg-light">
+
+    <!-- Header Wrapper -->
+    <div class="header-wrapper">
+        <!-- Top Bar -->
+        <div class="top-bar-v3">
+            <div class="container top-bar-inner">
+                <div class="top-bar-left hide-mobile">
+                    <div class="top-info"><span class="material-symbols-rounded"
+                            style="font-size: 1.2rem;">location_on</span> Avenue de la Marina, Cotonou, BENIN</div>
+                    <div class="top-info"><span class="material-symbols-rounded"
+                            style="font-size: 1.2rem;">schedule</span> Lundi au Samedi: 07h-23h | 24h/24h (Semaine de
+                        garde)</div>
+                </div>
+                <div class="top-bar-right social-links-small">
+                    <a href="#" aria-label="Facebook" style="font-weight:bold; font-family:serif;">f</a>
+                    <a href="#" aria-label="WhatsApp" style="font-weight:bold; font-family:serif;">w</a>
+                    <a href="#" aria-label="Instagram" style="font-weight:bold; font-family:serif;">in</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Middle Bar -->
+        <div class="middle-bar">
+            <div class="container middle-bar-inner">
+                <div class="middle-left phone-block hide-tablet">
+                    <span class="material-symbols-rounded phone-icon">call</span>
+                    <div class="phone-text">
+                        <span class="phone-label">TÉLÉPHONE</span>
+                        <span class="phone-number">0194013991</span>
+                    </div>
+                </div>
+
+                <div class="middle-center logo-container">
+                    <a href="index.html" class="logo-v3">
+                        <div class="logo-icon-wrapper">
+                            <span class="material-symbols-rounded" style="font-size: 3.5rem;">local_pharmacy</span>
+                        </div>
+                        <div class="logo-text-wrapper">
+                            <span class="logo-title">Pharmacie du Port</span>
+                            <span class="logo-subtitle"
+                                style="font-family: 'Inter', sans-serif; font-style: normal; color: var(--text-dark); font-size: 1rem;">–
+                                Cotonou</span>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="middle-right action-icons">
+                    <a href="#" class="icon-btn hide-mobile"><span class="material-symbols-rounded">person</span></a>
+                    <a href="order.html" class="icon-btn"><span
+                            class="material-symbols-rounded">shopping_cart</span></a>
+                    <button class="mobile-menu-btn" aria-label="Menu">
+                        <span class="material-symbols-rounded">menu</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Navigation -->
+        <header class="main-header-v3">
+            <div class="container">
+                <nav class="nav-v3">
+                    <ul id="mainMenu">
+                        <li><a href="index.html">Accueil</a></li>
+                        <li><a href="about.html">À Propos</a></li>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="order.html">Commander</a></li>
+                        <li><a href="blog.html" class="active">Conseils Santé</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+    </div>
+
+    <!-- Page Header Banner -->
+    <section class="page-banner"
+        style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('img/ACCUEIL.jpeg');">
+        <div class="container" style="z-index: 2; position: relative;">
+            <div class="hero-content" style="margin: 0 auto; max-width: 800px; text-align: center;">
+                <h1
+                    style="font-size: 3.5rem; color: #fff; letter-spacing: 2px; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">
+                    Blog & <span style="color: var(--primary-color);">Conseils Santé</span></h1>
+                <p
+                    style="color: rgba(255,255,255,0.9); font-size: 1.125rem; font-weight: 500; text-shadow: 0 1px 5px rgba(0,0,0,0.3);">
+                    S'informer, c'est la première
+                    étape vers une meilleure santé au quotidien à Cotonou.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="blog-intro-section">
+        <div class="container">
+            <div class="blog-intro-wrapper">
+                <div class="blog-intro-image">
+                    <img src="img/Avatar.png" alt="Dr GLD">
+                </div>
+                <div class="blog-intro-content">
+                    <h2>Conseils de votre Pharmacienne</h2>
+                    <p>Bienvenue dans notre espace santé. Je suis la <strong>Dr GLD</strong>, et il
+                        me tient à cœur de partager avec vous des conseils pratiques et fiables pour prendre soin de
+                        vous et de votre famille au quotidien. Bonne lecture !</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section style="padding-bottom: 5rem;">
+        <div class="container">
+            <div class="blog-grid" id="dynamic-blog-grid">
+                <!-- Dynamic articles from Supabase will be injected here -->
+                <p style="grid-column: 1/-1; text-align: center; color: var(--text-light); padding: 40px;">Chargement
+                    des articles...</p>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <a href="#" class="btn btn-primary active">1</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="location">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <a href="index.html" class="footer-logo">
+                        <span class="material-symbols-rounded">local_pharmacy</span>
+                        <div>Pharmacie du Port</div>
+                    </a>
+                    <p>Votre santé, notre priorité au cœur de Cotonou. Service rapide, produits certifiés et conseils
+                        pharmaceutiques fiables pour accompagner les familles et professionnels.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link" aria-label="Facebook">F</a>
+                        <a href="https://wa.me/0194013991" class="social-link" aria-label="WhatsApp">W</a>
+                        <a href="#" class="social-link" aria-label="LinkedIn">L</a>
+                    </div>
+                </div>
+
+                <div class="footer-widget">
+                    <h4>Liens Rapides</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Accueil</a></li>
+                        <li><a href="about.html">À Propos</a></li>
+                        <li><a href="services.html">Nos Services</a></li>
+                        <li><a href="order.html">Commander en Ligne</a></li>
+                        <li><a href="blog.html">Conseils Santé</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-widget">
+                    <h4>Nos Services</h4>
+                    <ul class="footer-links">
+                        <li><a href="services.html">Ordonnances</a></li>
+                        <li><a href="services.html">Parapharmacie</a></li>
+                        <li><a href="services.html">Matériel Médical</a></li>
+                        <li><a href="services.html">Produits Bébé</a></li>
+                        <li><a href="services.html">Santé Voyage</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-widget">
+                    <h4>Contact & Localisation</h4>
+                    <ul class="footer-contact">
+                        <li>
+                            <span class="material-symbols-rounded">location_on</span>
+                            <span>Avenue de la Marina, Cotonou, BENIN</span>
+                        </li>
+                        <li>
+                            <span class="material-symbols-rounded">call</span>
+                            <span>0194013991<br>0194013991 (WhatsApp)</span>
+                        </li>
+                        <li>
+                            <span class="material-symbols-rounded">mail</span>
+                            <span>phcieduportcotonou@yahoo.com</span>
+                        </li>
+                        <li>
+                            <span class="material-symbols-rounded">schedule</span>
+                            <span>- Lundi au Samedi (07h à 23h)<br>- Semaines de garde (24h/24h)</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; <a href="admin-login.html" style="color: inherit; text-decoration: none; cursor: default;"
+                        aria-hidden="true">2026</a> Pharmacie du Port - Cotonou. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS -->
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabaseClient.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/blog.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion Administration - Pharmacie du Port</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Material Symbols -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <style>
+        body {
+            background-color: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .login-container {
+            background: white;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-logo {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .login-container h2 {
+            margin-bottom: 2rem;
+            color: #1a202c;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .contact-input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .contact-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 163, 114, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
+        .error-message {
+            color: #e53e3e;
+            background-color: #fff5f5;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container">
+        <div class="login-logo">
+            <span class="material-symbols-rounded" style="font-size: 48px;">admin_panel_settings</span>
+        </div>
+        <h2>Espace Administrateur</h2>
+
+        <div id="errorMessage" class="error-message"></div>
+
+        <form id="adminLoginForm">
+            <div class="form-group">
+                <label for="email">Adresse Email</label>
+                <input type="email" id="email" class="contact-input" required placeholder="admin@pharmacie.com">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" class="contact-input" required placeholder="••••••••">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-login" id="loginBtn">Se Connecter</button>
+        </form>
+
+        <div style="margin-top: 2rem; font-size: 0.85rem; color: #718096;">
+            <a href="index.html" style="color: var(--primary-color); text-decoration: none;">&larr; Retour à
+                l'accueil</a>
+        </div>
+    </div>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabaseClient.js"></script>
+    <script src="js/admin-login.js"></script>
+</body>
+
+</html>

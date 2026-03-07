@@ -1,0 +1,12 @@
+# node_modules
+node_modules/
+.DS_Store
+Thumbs.db
+*.log
+.env
+.gemini/
+.agents/
+.agent/
+_agents/
+_agent/
+tmp/

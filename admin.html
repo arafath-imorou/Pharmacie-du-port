@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration - Pharmacie du Port</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Material Symbols -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <!-- Quill Rich Text Editor -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8fafc;
+            display: flex;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .admin-sidebar {
+            width: 280px;
+            background-color: white;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.25rem;
+            color: #1a202c;
+            font-weight: 600;
+        }
+
+        .sidebar-header .material-symbols-rounded {
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+            flex-grow: 1;
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-link {
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: #4a5568;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            background-color: #f1f5f9;
+        }
+
+        .nav-link.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .sidebar-footer {
+            padding: 24px 16px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 10px;
+            background: none;
+            border: 1px solid #e2e8f0;
+            color: #e53e3e;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            background-color: #fff5f5;
+            border-color: #fc8181;
+        }
+
+        /* Main Content Styles */
+        .admin-main {
+            flex-grow: 1;
+            margin-left: 280px;
+            padding: 40px;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .admin-header h1 {
+            font-size: 2rem;
+            color: #1a202c;
+            font-weight: 700;
+        }
+
+        .user-info {
+            color: #718096;
+            font-size: 0.9rem;
+            background-color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Panel Sections */
+        .admin-panel {
+            display: none;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+            padding: 32px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .admin-panel.active {
+            display: block;
+        }
+
+        /* Tables & Lists generic styles */
+        .data-table-container {
+            overflow-x: auto;
+            margin-top: 24px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .data-table th {
+            font-weight: 600;
+            color: #4a5568;
+            background-color: #f8fafc;
+        }
+
+        .data-table tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #718096;
+        }
+
+        .action-btn:hover {
+            background-color: #e2e8f0;
+            color: var(--primary-color);
+        }
+
+        .action-btn.delete:hover {
+            color: #e53e3e;
+        }
+
+        /* Products Specific */
+        .panel-header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        /* Loading / Error States */
+        .loading-state {
+            text-align: center;
+            padding: 40px;
+            color: #718096;
+        }
+
+        .badge-admin {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background-color: #c6f6d5;
+            color: #22543d;
+        }
+
+        .badge-danger {
+            background-color: #fed7d7;
+            color: #822727;
+        }
+
+        /* Modal Styles for Editing Products */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn-secondary {
+            background-color: #edf2f7;
+            color: #4a5568;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <span class="material-symbols-rounded">admin_panel_settings</span>
+            <h2>PharmaAdmin</h2>
+        </div>
+
+        <nav class="nav-links">
+            <div class="nav-link active" data-target="dashboard-panel">
+                <span class="material-symbols-rounded">dashboard</span>
+                Produits
+            </div>
+            <div class="nav-link" data-target="blog-panel">
+                <span class="material-symbols-rounded">article</span>
+                Conseils Santé
+            </div>
+            <div class="nav-link" data-target="messages-panel">
+                <span class="material-symbols-rounded">mail</span>
+                Messages Contacts
+            </div>
+            <div class="nav-link" data-target="orders-panel">
+                <span class="material-symbols-rounded">shopping_bag</span>
+                Commandes Web
+            </div>
+            <div class="nav-link" data-target="pages-panel">
+                <span class="material-symbols-rounded">web</span>
+                Contenu des Pages
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="btn-logout" id="logoutBtn">
+                <span class="material-symbols-rounded">logout</span>
+                Déconnexion
+            </button>
+        </div>
+    </aside>
+
+    <main class="admin-main">
+        <div class="admin-header">
+            <h1 id="pageTitle">Gestion des Produits</h1>
+            <div class="user-info">
+                <span class="material-symbols-rounded" style="font-size: 18px;">account_circle</span>
+                <span id="userEmail">Chargement...</span>
+            </div>
+        </div>
+
+        <!-- PRODUCTS PANEL -->
+        <section id="dashboard-panel" class="admin-panel active">
+            <div class="panel-header-actions">
+                <h3 style="margin: 0; color: #4a5568;">Catalogue de la Pharmacie</h3>
+                <button class="btn btn-primary" id="addBtn" style="padding: 10px 20px; font-size: 0.9rem;">
+                    <span class="material-symbols-rounded"
+                        style="font-size: 18px; margin-right: 8px; vertical-align: middle;">add</span>
+                    Ajouter un Produit
+                </button>
+            </div>
+
+            <div class="data-table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Catégorie</th>
+                            <th>Prix</th>
+                            <th>Stock</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTableBody">
+                        <tr>
+                            <td colspan="6" class="loading-state">Chargement des données...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- BLOG PANEL -->
+        <section id="blog-panel" class="admin-panel">
+            <div class="panel-header-actions">
+                <h3 style="margin: 0; color: #4a5568;">Gestion des Articles (Blog)</h3>
+                <button class="btn btn-primary" id="addArticleBtn" style="padding: 10px 20px; font-size: 0.9rem;">
+                    <span class="material-symbols-rounded"
+                        style="font-size: 18px; margin-right: 8px; vertical-align: middle;">add</span>
+                    Rédiger un article
+                </button>
+            </div>
+
+            <div class="data-table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Titre &amp; Catégorie</th>
+                            <th style="width: 40%">Aperçu</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="articlesTableBody">
+                        <tr>
+                            <td colspan="4" class="loading-state">Chargement des articles...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- MESSAGES PANEL -->
+        <section id="messages-panel" class="admin-panel">
+            <h3 style="margin: 0 0 24px 0; color: #4a5568;">Boîte de Réception (Contact)</h3>
+            <div class="data-table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Nom</th>
+                            <th>Email</th>
+                            <th>Téléphone</th>
+                            <th>Sujet &amp; Message</th>
+                        </tr>
+                    </thead>
+                    <tbody id="messagesTableBody">
+                        <tr>
+                            <td colspan="5" class="loading-state">Chargement des données...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ORDERS PANEL -->
+        <section id="orders-panel" class="admin-panel">
+            <h3 style="margin: 0 0 24px 0; color: #4a5568;">Historique des Commandes (WhatsApp)</h3>
+            <div class="data-table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Client</th>
+                            <th>Téléphone</th>
+                            <th>Livraison</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                        <tr>
+                            <td colspan="5" class="loading-state">Chargement des données...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- PAGES CONTENT PANEL -->
+        <section id="pages-panel" class="admin-panel">
+            <h3 style="margin: 0 0 24px 0; color: #4a5568;">Gestion du Contenu des Pages</h3>
+            <div class="data-table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Page</th>
+                            <th>Section</th>
+                            <th style="width: 50%">Contenu Actuel</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pagesTableBody">
+                        <tr>
+                            <td colspan="4" class="loading-state">Chargement du contenu...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Product Modal -->
+    <div class="modal-overlay" id="productModal">
+        <div class="modal-content">
+            <h2 id="modalTitle" style="margin-top:0; color:#1a202c; font-size: 1.5rem;">Ajouter un Produit</h2>
+            <form id="productForm">
+                <input type="hidden" id="prodId">
+                <div class="form-group">
+                    <label>Nom du Produit</label>
+                    <input type="text" id="prodName" required class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Catégorie</label>
+                    <input type="text" id="prodCat" required class="form-control"
+                        placeholder="ex: Hygiène, Vitamines...">
+                </div>
+                <div class="form-row" style="display:flex; gap:16px;">
+                    <div class="form-group" style="flex:1;">
+                        <label>Prix</label>
+                        <input type="text" id="prodPrice" required class="form-control" placeholder="ex: 1 500 FCFA">
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label>Stock</label>
+                        <select id="prodStock" class="form-control">
+                            <option value="true">En Stock</option>
+                            <option value="false">Rupture</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Description courte</label>
+                    <textarea id="prodDesc" rows="3" class="form-control"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelModalBtn">Annuler</button>
+                    <button type="submit" class="btn btn-primary" id="saveProdBtn">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Article Modal -->
+    <div class="modal-overlay" id="articleModal">
+        <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+            <h2 id="articleModalTitle" style="margin-top:0; color:#1a202c; font-size: 1.5rem;">Rédiger un Article</h2>
+            <form id="articleForm">
+                <input type="hidden" id="artId">
+                <div class="form-group">
+                    <label>Titre de l'article</label>
+                    <input type="text" id="artTitle" required class="form-control">
+                </div>
+                <div class="form-row" style="display:flex; gap:16px;">
+                    <div class="form-group" style="flex:1;">
+                        <label>Catégorie</label>
+                        <input type="text" id="artCat" required class="form-control"
+                            placeholder="ex: Prévention, Bien-être...">
+                    </div>
+                    <div class="form-group" style="flex:1;">
+                        <label>Image d'illustration</label>
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <div style="display: flex; gap: 8px;">
+                                <input type="text" id="artImage" class="form-control" placeholder="URL de l'image..."
+                                    style="flex: 1;">
+                                <label class="btn-secondary"
+                                    style="cursor: pointer; padding: 8px 12px; margin: 0; display: flex; align-items: center; justify-content: center;">
+                                    <span class="material-symbols-rounded" style="font-size: 20px;">upload_file</span>
+                                    <input type="file" id="artFile" accept="image/*" style="display: none;">
+                                </label>
+                            </div>
+                            <div id="imagePreview"
+                                style="display: none; width: 100%; height: 100px; border-radius: 4px; overflow: hidden; border: 1px solid #e2e8f0; background: #f7fafc; position: relative;">
+                                <img src="" id="previewImg" style="width: 100%; height: 100%; object-fit: cover;">
+                                <button type="button" id="removePreview"
+                                    style="position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                                    <span class="material-symbols-rounded" style="font-size: 16px;">close</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Petit résumé (Aperçu sur la page d'accueil du blog)</label>
+                    <textarea id="artExcerpt" rows="2" class="form-control"
+                        placeholder="Maximum 2 phrases conseillées..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Contenu de l'article</label>
+                    <div id="artQuillEditor"
+                        style="height: 300px; background: white; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
+                    </div>
+                    <textarea id="artContent" style="display:none;"></textarea>
+                    <small style="color:#718096">Utilisez la barre d'outils pour mettre en forme votre texte.</small>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelArticleModalBtn">Annuler</button>
+                    <button type="submit" class="btn btn-primary" id="saveArticleBtn">Publier</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Page Content Modal -->
+    <div class="modal-overlay" id="pageContentModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <h2 id="pageContentModalTitle" style="margin-top:0; color:#1a202c; font-size: 1.5rem;">Modifier le Contenu
+            </h2>
+            <form id="pageContentForm">
+                <input type="hidden" id="contentId">
+                <div class="form-group">
+                    <label>Page & Section</label>
+                    <input type="text" id="contentInfo" disabled class="form-control" style="background: #f7fafc;">
+                </div>
+                <div class="form-group">
+                    <label>Texte du contenu (HTML autorisé)</label>
+                    <textarea id="contentText" rows="8" required class="form-control"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelPageContentModalBtn">Annuler</button>
+                    <button type="submit" class="btn btn-primary" id="savePageContentBtn">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Quill JS -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="js/supabaseClient.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+
+</html>
