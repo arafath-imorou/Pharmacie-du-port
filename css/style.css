@@ -25,7 +25,6 @@ footer {
 
 /* GPU-accelerate animated/interactive elements */
 .header-wrapper,
-.nav-v3 ul,
 .service-card,
 .blog-card,
 .testimonial-card,
@@ -572,43 +571,37 @@ section.bg-light {
         display: block;
     }
 
+    /* Hide the nav bar wrapper completely on mobile */
     .main-header-v3 {
         background-color: var(--primary-color);
         padding: 0;
-        position: relative;
-        overflow: visible;
     }
 
-    .nav-v3 {
-        overflow: hidden;
-        max-height: 0;
-        transition: max-height 0.35s ease;
+    /* Hide nav links by default on mobile */
+    .nav-v3 ul {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        margin: 0;
+        padding: 0;
         background-color: var(--white);
         box-shadow: var(--shadow-md);
     }
 
-    .nav-v3.active {
-        max-height: 500px;
-    }
-
-    .nav-v3 ul {
+    /* Show nav links when menu is active */
+    .nav-v3.active ul {
         display: flex;
-        flex-direction: column;
-        width: 100%;
-        padding: 0.5rem 0;
-        gap: 0;
-        margin: 0;
     }
 
     .nav-v3 a {
         color: var(--text-dark);
-        padding: 0.9rem 1.5rem;
+        padding: 1rem 1.5rem;
         width: 100%;
         display: block;
         border-bottom: 1px solid var(--border-color);
     }
 
-    .nav-v3 a:last-child {
+    .nav-v3 li:last-child a {
         border-bottom: none;
     }
 
