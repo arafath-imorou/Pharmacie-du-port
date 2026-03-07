@@ -1011,6 +1011,67 @@ section.bg-light {
     color: var(--text-light);
 }
 
+.on-call-footer {
+    width: 100%;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 2rem;
+    margin-top: 1rem;
+}
+
+.emergency-contact-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.emergency-label {
+    font-weight: 800;
+    color: #ef4444;
+    font-size: 1.25rem;
+    letter-spacing: 1px;
+}
+
+.icon-pointer {
+    font-size: 2.5rem;
+    color: #f97316;
+    transform: rotate(90deg);
+    animation: finger-point 1.5s infinite;
+}
+
+@keyframes finger-point {
+
+    0%,
+    100% {
+        transform: rotate(90deg) translateX(0);
+    }
+
+    50% {
+        transform: rotate(90deg) translateX(10px);
+    }
+}
+
+.emergency-phone-link {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--text-dark);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.emergency-phone-link:hover {
+    color: #ea580c;
+    transform: scale(1.05);
+}
+
+.emergency-advice {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
 @media (max-width: 768px) {
     .card-on-call {
         padding: 3rem 1.5rem;
