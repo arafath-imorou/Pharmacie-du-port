@@ -863,6 +863,11 @@ section.bg-light {
     font-size: 2rem;
 }
 
+.on-call-text {
+    text-align: center;
+    flex: 1;
+}
+
 .on-call-text h3 {
     color: #E65100;
     margin-bottom: 0.5rem;
@@ -1794,11 +1799,13 @@ footer {
     padding: 3rem;
     /* Increased padding */
     display: flex;
+    flex-direction: column;
+    /* Centrage vertical et horizontal */
     align-items: center;
-    gap: 3rem;
-    /* Increased gap */
+    justify-content: center;
+    text-align: center;
+    gap: 1.5rem;
     box-shadow: var(--shadow-sm);
-    /* Softer shadow */
 }
 
 /* Bento Grid */
