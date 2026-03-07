@@ -108,8 +108,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!statusBadge || !statusText) return;
 
-        // Reference: Sunday March 1st, 2026 00:00 (Start of an ON-CALL week)
-        const referenceDate = new Date('2026-03-01T00:00:00').getTime();
+        // Reference: Monday March 2nd, 2026 00:00 (Start of an ON-CALL week)
+        const referenceDate = new Date('2026-03-02T00:00:00').getTime();
         const oneWeekMs = 7 * 24 * 60 * 60 * 1000;
 
         const updateCountdown = () => {
