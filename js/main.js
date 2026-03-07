@@ -105,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const daysEl = document.getElementById('days');
         const hoursEl = document.getElementById('hours');
         const minutesEl = document.getElementById('minutes');
+        const secondsEl = document.getElementById('seconds');
 
         if (!statusBadge || !statusText) return;
 
@@ -146,15 +147,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const days = Math.floor(distance / (1000 * 60 * 60 * 24));
             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
             // Update UI
             if (daysEl) daysEl.innerText = days.toString().padStart(2, '0');
             if (hoursEl) hoursEl.innerText = hours.toString().padStart(2, '0');
             if (minutesEl) minutesEl.innerText = minutes.toString().padStart(2, '0');
+            if (secondsEl) secondsEl.innerText = seconds.toString().padStart(2, '0');
         };
 
         updateCountdown();
-        setInterval(updateCountdown, 60000); // UI update every minute
+        setInterval(updateCountdown, 1000); // UI update every second
     };
 
     injectWhatsAppButton();
