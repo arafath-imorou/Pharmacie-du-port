@@ -342,8 +342,8 @@ section.bg-light {
 }
 
 .logo-img {
-    height: 90px;
-    /* Taille optimale après retrait du texte */
+    height: 130px;
+    /* Taille augmentée pour une visibilité maximale */
     width: auto;
     object-fit: contain;
     transition: var(--transition);
@@ -3691,6 +3691,11 @@ footer {
 
     .icon-btn .material-symbols-rounded {
         font-size: 1.25rem;
+    }
+
+    .logo-img {
+        height: 80px;
+        /* Taille adaptée pour mobile */
     }
 
     h1 {
