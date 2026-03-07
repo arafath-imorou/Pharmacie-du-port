@@ -336,9 +336,21 @@ section.bg-light {
 }
 
 .logo-icon-wrapper {
-    color: var(--primary-color);
     display: flex;
     align-items: center;
+    justify-content: center;
+}
+
+.logo-img {
+    height: 70px;
+    /* Taille optimale pour l'en-tête */
+    width: auto;
+    object-fit: contain;
+    transition: var(--transition);
+}
+
+.logo-v3:hover .logo-img {
+    transform: scale(1.05);
 }
 
 .logo-text-wrapper {
@@ -3635,6 +3647,23 @@ footer {
     .page-banner {
         padding-top: 150px;
     }
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.footer-logo-img {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    /* Rendre le logo blanc pour le footer sombre */
 }
 
 /* --- Global Mobile Refinements (iPhone/Android) --- */
