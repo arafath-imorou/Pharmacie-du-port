@@ -167,22 +167,47 @@
 
     <!-- Innovative Component: Floating On-Call Banner -->
     <div class="container">
-        <div class="on-call-banner floating-on-call">
-            <div class="on-call-icon">
-                <span class="material-symbols-rounded">medical_services</span>
+        <!-- Modernized On-Call Card -->
+        <div class="card-on-call">
+            <div class="on-call-header">
+                <div class="on-call-badge-status" id="on-call-status-badge">
+                    <span class="pulse-dot"></span>
+                    <span id="on-call-status-text">Vérification du statut...</span>
+                </div>
+                <div class="on-call-title-wrapper">
+                    <span class="material-symbols-rounded icon-medical">medical_services</span>
+                    <h2>PHARMACIE DE GARDE 24H/24</h2>
+                </div>
+                <p class="on-call-subtitle">Assistance médicale assurée jour et nuit pour toutes vos urgences à Cotonou.
+                </p>
             </div>
-            <div class="on-call-text">
-                <h3>Pharmacie de Garde</h3>
-                <p>Consultez si nous sommes de garde cette semaine. Continuité des soins assurée 24h/24.</p>
-                <div class="on-call-status status-active" data-content-id="on_call_status">
-                    <span class="material-symbols-rounded">check_circle</span>
-                    Actuellement de Garde (Semaine du 02 Mars)
+
+            <div class="on-call-body">
+                <div class="on-call-countdown" id="on-call-countdown">
+                    <div class="countdown-label" id="countdown-label">Prochaine garde dans :</div>
+                    <div class="countdown-timer">
+                        <div class="timer-block">
+                            <span class="timer-value" id="days">00</span>
+                            <span class="timer-unit">Jours</span>
+                        </div>
+                        <div class="timer-block">
+                            <span class="timer-value" id="hours">00</span>
+                            <span class="timer-unit">Heures</span>
+                        </div>
+                        <div class="timer-block">
+                            <span class="timer-value" id="minutes">00</span>
+                            <span class="timer-unit">Min</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div>
-                <a href="tel:0194013991" class="btn btn-outline"
-                    style="border-color: #FF9800; color: #E65100; background: #FFF3E0; border-radius: 50px; padding: 0.75rem 2rem;">Appel
-                    d'Urgence</a>
+
+            <div class="on-call-footer">
+                <a href="tel:0194013991" class="btn btn-emergency-large">
+                    <span class="material-symbols-rounded">call</span>
+                    APPEL D'URGENCE IMMÉDIAT
+                </a>
+                <p class="desktop-phone-display hide-mobile">Numéro d’urgence : <strong>+229 01 94 01 39 91</strong></p>
             </div>
         </div>
     </div>

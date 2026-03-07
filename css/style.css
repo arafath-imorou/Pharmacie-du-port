@@ -828,54 +828,212 @@ section.bg-light {
     width: 100%;
 }
 
-/* On-Call Pharmacy */
-.on-call-banner {
-    background-color: #FFF3E0;
-    border: 1px solid #FFE0B2;
-    border-radius: var(--radius-md);
-    margin-top: 2rem;
+/* Modernized On-Call Card Styles */
+.card-on-call {
+    background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+    border: 1px solid #dcfce7;
+    border-radius: 2rem;
+    padding: 3.5rem 2rem;
+    margin-top: 4rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
 }
 
-@media (max-width: 768px) {
-    .on-call-banner {
-        flex-direction: column;
-        text-align: center;
-        padding: 2rem 1.5rem;
-    }
-
-    .on-call-icon {
-        margin: 0 auto;
-    }
+.on-call-badge-status {
+    background: #fee2e2;
+    color: #ef4444;
+    padding: 0.5rem 1.25rem;
+    border-radius: 2rem;
+    font-weight: 700;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.on-call-icon {
-    width: 60px;
-    height: 60px;
-    background-color: #FF9800;
-    color: var(--white);
+.on-call-badge-status.status-active {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.pulse-dot {
+    width: 10px;
+    height: 10px;
+    background: currentColor;
     border-radius: 50%;
+    position: relative;
+}
+
+.pulse-dot::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: currentColor;
+    border-radius: 50%;
+    animation: badge-pulse 2s infinite;
+}
+
+@keyframes badge-pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(2.5);
+        opacity: 0;
+    }
+}
+
+.on-call-title-wrapper {
     display: flex;
     align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.icon-medical {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+}
+
+.card-on-call h2 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    letter-spacing: -0.5px;
+    margin: 0;
+}
+
+.on-call-subtitle {
+    color: var(--text-light);
+    font-size: 1.15rem;
+    max-width: 600px;
+}
+
+.on-call-body {
+    margin: 3rem 0;
+    width: 100%;
+}
+
+.countdown-timer {
+    display: flex;
     justify-content: center;
+    gap: 1.5rem;
+    margin-top: 1rem;
 }
 
-.on-call-icon .material-symbols-rounded {
-    font-size: 2rem;
+.timer-block {
+    background: var(--white);
+    padding: 1.25rem;
+    border-radius: 1.25rem;
+    min-width: 90px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+    border: 1px solid #f1f5f9;
 }
 
-.on-call-text {
-    text-align: center;
-    flex: 1;
+.timer-value {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+    font-family: 'Inter', sans-serif;
 }
 
-.on-call-text h3 {
-    color: #E65100;
+.timer-unit {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--text-light);
+    letter-spacing: 1px;
+}
+
+.countdown-label {
+    font-weight: 600;
+    color: var(--text-dark);
     margin-bottom: 0.5rem;
 }
 
-.on-call-text p {
-    color: var(--text-dark);
-    margin: 0;
+.btn-emergency-large {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    color: var(--white);
+    padding: 1.25rem 3rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    border-radius: 100px;
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 25px rgba(234, 88, 12, 0.3);
+    animation: emergency-pulse 2.5s infinite;
+}
+
+@keyframes emergency-pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 10px 25px rgba(234, 88, 12, 0.3);
+    }
+
+    50% {
+        transform: scale(1.03);
+        box-shadow: 0 15px 35px rgba(234, 88, 12, 0.5);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 10px 25px rgba(234, 88, 12, 0.3);
+    }
+}
+
+.btn-emergency-large:hover {
+    transform: translateY(-5px) scale(1.05);
+    background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+    color: white;
+}
+
+.desktop-phone-display {
+    margin-top: 1.5rem;
+    color: var(--text-light);
+}
+
+@media (max-width: 768px) {
+    .card-on-call {
+        padding: 3rem 1.5rem;
+    }
+
+    .card-on-call h2 {
+        font-size: 1.5rem;
+    }
+
+    .timer-block {
+        min-width: 75px;
+        padding: 1rem;
+    }
+
+    .timer-value {
+        font-size: 1.75rem;
+    }
+
+    .btn-emergency-large {
+        width: 100%;
+        padding: 1.25rem 1.5rem;
+        font-size: 1.1rem;
+    }
 }
 
 .on-call-status {
@@ -1786,27 +1944,7 @@ footer {
     padding: 0.75rem 1.5rem;
 }
 
-/* Floating On-Call Banner - Respaced for breathability */
-.floating-on-call {
-    margin-top: 4rem;
-    /* Changed from -60px to add positive breathing room */
-    margin-bottom: 2rem;
-    position: relative;
-    border-left: 4px solid var(--accent-color);
-    /* Changed from top to left for elegance */
-    background-color: var(--white);
-    border-radius: var(--radius-lg);
-    padding: 3rem;
-    /* Increased padding */
-    display: flex;
-    flex-direction: column;
-    /* Centrage vertical et horizontal */
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    gap: 1.5rem;
-    box-shadow: var(--shadow-sm);
-}
+/* Removed old floating-on-call in favor of card-on-call */
 
 /* Bento Grid */
 .bento-grid {
