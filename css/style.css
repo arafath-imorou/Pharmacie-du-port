@@ -364,9 +364,8 @@ section.bg-light {
     color: var(--primary-color);
 }
 
-/* Tier 2: Middle Bar */
 .middle-bar {
-    padding: 1rem 0;
+    padding: 0.4rem 0;
     background-color: var(--white);
 }
 
@@ -383,7 +382,7 @@ section.bg-light {
 }
 
 .phone-icon {
-    font-size: 2rem;
+    font-size: 1.5rem;
     color: var(--text-light);
 }
 
@@ -418,7 +417,7 @@ section.bg-light {
 }
 
 .logo-img {
-    height: 130px;
+    height: 85px;
     /* Taille augmentée pour une visibilité maximale */
     width: auto;
     object-fit: contain;
@@ -457,8 +456,8 @@ section.bg-light {
 }
 
 .icon-btn {
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     border: 2px solid var(--primary-color);
     display: flex;
