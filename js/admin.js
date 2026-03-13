@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let sessionUser = null;
 
     try {
-        const { data: { session }, error } = await window.supabase.auth.getSession();
+        const { data: { session }, error } = await supabaseClient.auth.getSession();
 
         if (error || !session) {
             // Not logged in -> redirect to login
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', async () => {
-            await window.supabase.auth.signOut();
+            await supabaseClient.auth.signOut();
             window.location.href = 'admin-login.html';
         });
     }
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Load Products
     async function loadProducts() {
         productsTableBody.innerHTML = '<tr><td colspan="6" class="loading-state">Chargement...</td></tr>';
-        const { data, error } = await window.supabase.from('products').select('*').order('id', { ascending: false });
+        const { data, error } = await supabaseClient.from('products').select('*').order('id', { ascending: false });
 
         if (error) {
             productsTableBody.innerHTML = '<tr><td colspan="6" class="loading-state">Erreur de chargement</td></tr>';
@@ -163,10 +163,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             let error;
             if (isEditing && id) {
-                const res = await window.supabase.from('products').update(payload).eq('id', id);
+                const res = await supabaseClient.from('products').update(payload).eq('id', id);
                 error = res.error;
             } else {
-                const res = await window.supabase.from('products').insert([payload]);
+                const res = await supabaseClient.from('products').insert([payload]);
                 error = res.error;
             }
 
@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Edit Product (Globals to match button onclick)
     window.editProduct = async (id) => {
-        const { data, error } = await window.supabase.from('products').select('*').eq('id', id).single();
+        const { data, error } = await supabaseClient.from('products').select('*').eq('id', id).single();
         if (error || !data) return alert("Erreur lors de la récupération.");
 
         isEditing = true;
@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.deleteProduct = async (id) => {
         if (!confirm("Voulez-vous vraiment supprimer ce produit ? Cette action est irréversible.")) return;
 
-        const { error } = await window.supabase.from('products').delete().eq('id', id);
+        const { error } = await supabaseClient.from('products').delete().eq('id', id);
         if (error) return alert("Erreur lors de la suppression.");
 
         await loadProducts();
@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const messagesTableBody = document.getElementById('messagesTableBody');
     async function loadMessages() {
         messagesTableBody.innerHTML = '<tr><td colspan="5" class="loading-state">Chargement...</td></tr>';
-        const { data, error } = await window.supabase.from('contact_messages').select('*').order('created_at', { ascending: false });
+        const { data, error } = await supabaseClient.from('contact_messages').select('*').order('created_at', { ascending: false });
 
         if (error) {
             messagesTableBody.innerHTML = '<tr><td colspan="5" class="loading-state">Erreur de chargement</td></tr>';
@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         ordersTableBody.innerHTML = '<tr><td colspan="5" class="loading-state">Chargement...</td></tr>';
 
         // Fetch orders and inner join with order_items using Supabase embedded query
-        const { data, error } = await window.supabase.from('orders').select('*, order_items(*)').order('created_at', { ascending: false });
+        const { data, error } = await supabaseClient.from('orders').select('*, order_items(*)').order('created_at', { ascending: false });
 
         if (error) {
             ordersTableBody.innerHTML = '<tr><td colspan="5" class="loading-state">Erreur de chargement</td></tr>';
@@ -310,7 +310,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!articlesTableBody) return;
         articlesTableBody.innerHTML = '<tr><td colspan="4" class="loading-state">Chargement...</td></tr>';
 
-        const { data, error } = await window.supabase
+        const { data, error } = await supabaseClient
             .from('blog_articles')
             .select('*')
             .order('created_at', { ascending: false });
@@ -451,13 +451,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
                     const filePath = `articles/${fileName}`;
 
-                    const { error: uploadError } = await window.supabase.storage
+                    const { error: uploadError } = await supabaseClient.storage
                         .from('blog-images')
                         .upload(filePath, file);
 
                     if (uploadError) throw uploadError;
 
-                    const { data: publicUrlData } = window.supabase.storage
+                    const { data: publicUrlData } = supabaseClient.storage
                         .from('blog-images')
                         .getPublicUrl(filePath);
 
@@ -473,8 +473,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 };
 
                 const { data: res, error } = isEditingArticle && id
-                    ? await window.supabase.from('blog_articles').update(payload).eq('id', id)
-                    : await window.supabase.from('blog_articles').insert([payload]);
+                    ? await supabaseClient.from('blog_articles').update(payload).eq('id', id)
+                    : await supabaseClient.from('blog_articles').insert([payload]);
 
                 if (error) throw error;
 
@@ -493,7 +493,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Edit Article
     window.editArticle = async (id) => {
-        const { data, error } = await window.supabase.from('blog_articles').select('*').eq('id', id).single();
+        const { data, error } = await supabaseClient.from('blog_articles').select('*').eq('id', id).single();
         if (error || !data) return alert("Erreur lors de la récupération de l'article.");
 
         isEditingArticle = true;
@@ -528,7 +528,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.deleteArticle = async (id) => {
         if (!confirm("Voulez-vous vraiment supprimer cet article ?")) return;
 
-        const { error } = await window.supabase.from('blog_articles').delete().eq('id', id);
+        const { error } = await supabaseClient.from('blog_articles').delete().eq('id', id);
         if (error) return alert("Erreur lors de la suppression.");
 
         await loadArticles();
@@ -546,7 +546,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!pagesTableBody) return;
         pagesTableBody.innerHTML = '<tr><td colspan="4" class="loading-state">Chargement...</td></tr>';
 
-        const { data, error } = await window.supabase.from('site_content').select('*').order('page_id', { ascending: true });
+        const { data, error } = await supabaseClient.from('site_content').select('*').order('page_id', { ascending: true });
 
         if (error) {
             pagesTableBody.innerHTML = '<tr><td colspan="4" class="loading-state">Erreur de chargement</td></tr>';
@@ -572,7 +572,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     window.editPageContent = async (id) => {
-        const { data, error } = await window.supabase.from('site_content').select('*').eq('id', id).single();
+        const { data, error } = await supabaseClient.from('site_content').select('*').eq('id', id).single();
         if (error || !data) return alert("Erreur lors de la récupération.");
 
         document.getElementById('contentId').value = data.id;
@@ -597,7 +597,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             saveBtn.disabled = true;
             saveBtn.textContent = "Sauvegarde...";
 
-            const { error } = await window.supabase.from('site_content').update({ content_text: content, last_updated: new Date() }).eq('id', id);
+            const { error } = await supabaseClient.from('site_content').update({ content_text: content, last_updated: new Date() }).eq('id', id);
 
             if (error) {
                 alert("Erreur lors de la mise à jour.");

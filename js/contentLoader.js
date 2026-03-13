@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function loadDynamicContent() {
         try {
-            const { data, error } = await window.supabase
-                .from('site_content')
+                const { data, error } = await supabaseClient
+                    .from('site_content')
                 .select('section_id, content_text')
                 .eq('page_id', pageId);
 
@@ -42,12 +42,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Ensure supabase is available (wait a bit if needed or use window.supabase)
-    if (window.supabase) {
+    if (window.supabaseClient) {
         loadDynamicContent();
     } else {
         // Fallback if supabaseClient.js loads after this
         const checkSupabase = setInterval(() => {
-            if (window.supabase) {
+            if (window.supabaseClient) {
                 clearInterval(checkSupabase);
                 loadDynamicContent();
             }

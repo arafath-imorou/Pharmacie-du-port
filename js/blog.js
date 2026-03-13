@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!blogGrid) return;
 
     async function loadBlogArticles() {
-        const { data, error } = await window.supabase
+        const { data, error } = await supabaseClient
             .from('blog_articles')
             .select('*')
             .order('created_at', { ascending: false });

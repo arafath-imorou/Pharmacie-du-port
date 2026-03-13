@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
             errorMessage.style.display = 'none';
 
             try {
-                const { data, error } = await window.supabase.auth.signInWithPassword({
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
                     email: email,
                     password: password,
                 });
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function checkSession() {
-        const { data: { session } } = await window.supabase.auth.getSession();
+        const { data: { session } } = await supabaseClient.auth.getSession();
         if (session) {
             window.location.href = 'admin.html'; // Already logged in
         }

@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const { data, error } = await window.supabase
+        const { data, error } = await supabaseClient
             .from('blog_articles')
             .select('*')
             .eq('id', articleId)
