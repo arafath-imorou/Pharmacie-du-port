@@ -44,8 +44,20 @@ document.addEventListener('DOMContentLoaded', async () => {
                 finished = true;
             }
         }
-        productsDb = allProducts;
-        console.log(`${productsDb.length} produits chargés dans le cache.`);
+        // Deduplicate by name and category to avoid UI duplicates
+        const uniqueProducts = [];
+        const seen = new Set();
+        
+        allProducts.forEach(p => {
+            const key = `${p.name.toLowerCase()}|${p.category.toLowerCase()}`;
+            if (!seen.has(key)) {
+                seen.add(key);
+                uniqueProducts.push(p);
+            }
+        });
+
+        productsDb = uniqueProducts;
+        console.log(`${productsDb.length} produits uniques chargés dans le cache.`);
     } catch (err) {
         console.error("Erreur de chargement des produits :", err);
     }
