@@ -253,103 +253,115 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentFinalMessage = '';
 
     function showConfirmationModal() {
-        const fullNameInput = document.getElementById('fullName');
-        const phoneInput = document.getElementById('phone');
-        
-        const fullName = fullNameInput ? fullNameInput.value.trim() : '';
-        const phone = phoneInput ? phoneInput.value.trim() : '';
+        console.log("showConfirmationModal appelée");
+        try {
+            const fullNameInput = document.getElementById('fullName');
+            const phoneInput = document.getElementById('phone');
+            
+            const fullName = fullNameInput ? fullNameInput.value.trim() : '';
+            const phone = phoneInput ? phoneInput.value.trim() : '';
 
-        if (!fullName || !phone) {
-            alert('Veuillez remplir votre nom et numéro de téléphone.');
-            return;
-        }
-
-        let orderSummaryHtml = '';
-        let orderSummaryText = '';
-
-        if (activeOrderType === 'prescription-panel') {
-            if (prescriptionFile.files.length === 0) {
-                alert('Veuillez charger votre ordonnance.');
+            if (!fullName || !phone) {
+                alert('Veuillez remplir votre nom et numéro de téléphone.');
                 return;
             }
-            orderSummaryHtml = `
-                <div class="recap-row">
-                    <span class="label">Type de commande :</span>
-                    <span>Ordonnance (Photo)</span>
-                </div>
-                <div class="recap-row">
-                    <span class="label">Notes :</span>
-                    <span>${document.getElementById('prescriptionNotes').value || 'Aucune'}</span>
-                </div>
-            `;
-            orderSummaryText = `*Type:* Ordonnance (Photo ci-jointe)\n*Notes:* ${document.getElementById('prescriptionNotes').value || 'Aucune'}`;
-        } else {
-            if (basket.length === 0) {
-                alert('Votre panier est vide. Veuillez choisir des produits.');
-                return;
+
+            let orderSummaryHtml = '';
+            let orderSummaryText = '';
+
+            if (activeOrderType === 'prescription-panel') {
+                if (prescriptionFile && prescriptionFile.files.length === 0) {
+                    alert('Veuillez charger votre ordonnance.');
+                    return;
+                }
+                const notes = document.getElementById('prescriptionNotes') ? document.getElementById('prescriptionNotes').value : 'Aucune';
+                orderSummaryHtml = `
+                    <div class="recap-row">
+                        <span class="label">Type de commande :</span>
+                        <span>Ordonnance (Photo)</span>
+                    </div>
+                    <div class="recap-row">
+                        <span class="label">Notes :</span>
+                        <span>${notes}</span>
+                    </div>
+                `;
+                orderSummaryText = `*Type:* Ordonnance (Photo ci-jointe)\n*Notes:* ${notes}`;
+            } else {
+                if (basket.length === 0) {
+                    alert('Votre panier est vide. Veuillez choisir des produits.');
+                    return;
+                }
+                const itemsHtml = basket.map(item => `
+                    <div class="recap-item">
+                        <span>${item.name} (x${item.quantity})</span>
+                        <span>${formatPrice(item.price)}</span>
+                    </div>
+                `).join('');
+
+                orderSummaryHtml = `
+                    <div class="recap-row">
+                        <span class="label">Type de commande :</span>
+                        <span>Liste de produits</span>
+                    </div>
+                    <div class="recap-items">
+                        ${itemsHtml}
+                    </div>
+                    <div class="recap-total">
+                        <span>TOTAL ESTIMÉ</span>
+                        <span>${basketTotalAmount ? basketTotalAmount.textContent : '0'}</span>
+                    </div>
+                `;
+
+                const itemsListText = basket.map(item => `- ${item.name} (x${item.quantity}) - ${formatPrice(item.price)}`).join('\n');
+                orderSummaryText = `*Type:* Commande de produits\n*Produits:*\n${itemsListText}\n\n*TOTAL :* ${basketTotalAmount ? basketTotalAmount.textContent : '0'}`;
             }
-            const itemsHtml = basket.map(item => `
-                <div class="recap-item">
-                    <span>${item.name} (x${item.quantity})</span>
-                    <span>${formatPrice(item.price)}</span>
-                </div>
-            `).join('');
 
-            orderSummaryHtml = `
-                <div class="recap-row">
-                    <span class="label">Type de commande :</span>
-                    <span>Liste de produits</span>
+            const deliveryEl = document.getElementById('deliveryMethod');
+            const paymentEl = document.getElementById('paymentMethod');
+
+            const deliveryOption = (deliveryEl && deliveryEl.selectedOptions[0]) ? deliveryEl.selectedOptions[0].text : 'N/A';
+            const address = document.getElementById('deliveryAddress') ? document.getElementById('deliveryAddress').value : '';
+            const payment = (paymentEl && paymentEl.selectedOptions[0]) ? paymentEl.selectedOptions[0].text : 'N/A';
+
+            const deliveryText = (deliveryEl && deliveryEl.value === 'pickup') ?
+                'Retrait en pharmacie (Gratuit)' :
+                `Livraison à domicile\n*Adresse:* ${address}`;
+
+            let html = `
+                <div class="recap-section">
+                    <h4>Informations Personnelles</h4>
+                    <div class="recap-row"><span class="label">Nom :</span> <span>${fullName}</span></div>
+                    <div class="recap-row"><span class="label">Téléphone :</span> <span>${phone}</span></div>
                 </div>
-                <div class="recap-items">
-                    ${itemsHtml}
+                <div class="recap-section">
+                    <h4>Détails de la Commande</h4>
+                    ${orderSummaryHtml}
                 </div>
-                <div class="recap-total">
-                    <span>TOTAL ESTIMÉ</span>
-                    <span>${basketTotalAmount.textContent}</span>
+                <div class="recap-section">
+                    <h4>Réception & Paiement</h4>
+                    <div class="recap-row"><span class="label">Mode :</span> <span>${deliveryOption}</span></div>
+                    ${address ? `<div class="recap-row"><span class="label">Adresse :</span> <span>${address}</span></div>` : ''}
+                    <div class="recap-row"><span class="label">Paiement :</span> <span>${payment}</span></div>
                 </div>
             `;
 
-            const itemsListText = basket.map(item => `- ${item.name} (x${item.quantity}) - ${formatPrice(item.price)}`).join('\n');
-            orderSummaryText = `*Type:* Commande de produits\n*Produits:*\n${itemsListText}\n\n*TOTAL :* ${basketTotalAmount.textContent}`;
+            if (confirmationDetails) confirmationDetails.innerHTML = html;
+
+            currentFinalMessage = `*COMMANDE EN LIGNE - PHARMACIE DU PORT*\n\n`;
+            currentFinalMessage += `*CLIENT :* ${fullName}\n`;
+            currentFinalMessage += `*TEL :* ${phone}\n\n`;
+            currentFinalMessage += `${orderSummaryText}\n\n`;
+            currentFinalMessage += `*MODE DE RÉCEPTION :* ${deliveryText}\n`;
+            currentFinalMessage += `*MODE DE PAIEMENT :* ${payment}\n\n`;
+            currentFinalMessage += `_Merci de confirmer ma commande._`;
+
+            if (modal) modal.classList.remove('hidden');
+            console.log("Modal affichée");
+
+        } catch (error) {
+            console.error("Erreur dans showConfirmationModal :", error);
+            alert("Une erreur inattendue est survenue lors de la préparation du récapitulatif. Vérifiez la console F12.");
         }
-
-        const deliveryOption = document.getElementById('deliveryMethod').selectedOptions[0].text;
-        const address = document.getElementById('deliveryAddress').value;
-        const payment = document.getElementById('paymentMethod').selectedOptions[0].text;
-
-        const deliveryText = document.getElementById('deliveryMethod').value === 'pickup' ?
-            'Retrait en pharmacie (Gratuit)' :
-            `Livraison à domicile\n*Adresse:* ${address}`;
-
-        let html = `
-            <div class="recap-section">
-                <h4>Informations Personnelles</h4>
-                <div class="recap-row"><span class="label">Nom :</span> <span>${fullName}</span></div>
-                <div class="recap-row"><span class="label">Téléphone :</span> <span>${phone}</span></div>
-            </div>
-            <div class="recap-section">
-                <h4>Détails de la Commande</h4>
-                ${orderSummaryHtml}
-            </div>
-            <div class="recap-section">
-                <h4>Réception & Paiement</h4>
-                <div class="recap-row"><span class="label">Mode :</span> <span>${deliveryOption}</span></div>
-                ${address ? `<div class="recap-row"><span class="label">Adresse :</span> <span>${address}</span></div>` : ''}
-                <div class="recap-row"><span class="label">Paiement :</span> <span>${payment}</span></div>
-            </div>
-        `;
-
-        confirmationDetails.innerHTML = html;
-
-        currentFinalMessage = `*COMMANDE EN LIGNE - PHARMACIE DU PORT*\n\n`;
-        currentFinalMessage += `*CLIENT :* ${fullName}\n`;
-        currentFinalMessage += `*TEL :* ${phone}\n\n`;
-        currentFinalMessage += `${orderSummaryText}\n\n`;
-        currentFinalMessage += `*MODE DE RÉCEPTION :* ${deliveryText}\n`;
-        currentFinalMessage += `*MODE DE PAIEMENT :* ${payment}\n\n`;
-        currentFinalMessage += `_Merci de confirmer ma commande._`;
-
-        modal.classList.remove('hidden');
     }
 
     if (editBtn) editBtn.addEventListener('click', () => modal.classList.add('hidden'));
