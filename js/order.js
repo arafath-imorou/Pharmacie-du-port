@@ -3,6 +3,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Tabs Logic ---
     const tabs = document.querySelectorAll('.order-tab');
     const tabContents = document.querySelectorAll('.tab-content');
+    
+    // Track active tab robustly
+    let activeOrderType = 'prescription-panel'; // matches the default 'active' class in HTML
 
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
@@ -12,6 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
             tab.classList.add('active');
             const targetId = tab.getAttribute('data-target');
             document.getElementById(targetId).classList.remove('hidden');
+            activeOrderType = targetId;
+            console.log("Tab changée vers :", activeOrderType);
         });
     });
 
@@ -144,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function removeFromBasket(id) {
-        const index = basket.findIndex(item => item.id === id);
+        const index = basket.findIndex(item => item.id == id);
         if (index !== -1) {
             basket.splice(index, 1);
         }
@@ -152,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateQuantity(id, delta) {
-        const item = basket.find(i => i.id === id);
+        const item = basket.find(i => i.id == id);
         if (item) {
             item.quantity += delta;
             if (item.quantity <= 0) {
@@ -246,12 +251,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const activeTab = document.querySelector('.order-tab.active').getAttribute('data-target');
-
         let orderSummaryHtml = '';
         let orderSummaryText = '';
 
-        if (activeTab === 'prescription-panel') {
+        if (activeOrderType === 'prescription-panel') {
             if (prescriptionFile.files.length === 0) {
                 alert('Veuillez charger votre ordonnance.');
                 return;
@@ -350,13 +353,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const phone = document.getElementById('phone').value.trim();
             const deliveryMethodStr = document.getElementById('deliveryMethod').value;
             const deliveryAddressVal = document.getElementById('deliveryAddress').value;
-            const paymentMethod = document.getElementById('paymentMethod').selectedOptions[0].text;
-            const activeTab = document.querySelector('.order-tab.active').getAttribute('data-target');
+            const paymentOption = document.getElementById('paymentMethod').selectedOptions[0].text;
             const prescriptionNotes = document.getElementById('prescriptionNotes') ? document.getElementById('prescriptionNotes').value : '';
             const totalPrice = basketTotalAmount ? basketTotalAmount.textContent : '0';
 
             // Logs for debugging
-            console.log("Tentative d'enregistrement Supabase :", { fullName, phone, deliveryMethodStr });
+            console.log("Tentative d'enregistrement Supabase :", { fullName, phone, deliveryMethodStr, activeOrderType });
 
             try {
                 // 1. Save main order to Supabase
@@ -366,9 +368,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         client_phone: phone,
                         delivery_method: deliveryMethodStr,
                         delivery_address: deliveryAddressVal,
-                        payment_method: paymentMethod,
-                        prescription_notes: activeTab === 'prescription-panel' ? prescriptionNotes : null,
-                        total_price: activeTab !== 'prescription-panel' ? totalPrice : 'N/A'
+                        payment_method: paymentOption,
+                        prescription_notes: activeOrderType === 'prescription-panel' ? prescriptionNotes : null,
+                        total_price: activeOrderType !== 'prescription-panel' ? totalPrice : 'N/A'
                     }
                 ]).select();
 
@@ -377,7 +379,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 2. Save order items if it's a catalog order
                 if (orderData && orderData.length > 0) {
                     const newOrderId = orderData[0].id;
-                    if (activeTab === 'list-panel' && basket.length > 0) {
+                    if (activeOrderType === 'list-panel' && basket.length > 0) {
                         const itemsToInsert = basket.map(item => ({
                             order_id: newOrderId,
                             product_name: item.name,
@@ -418,3 +420,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
