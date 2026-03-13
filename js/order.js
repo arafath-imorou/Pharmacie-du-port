@@ -358,7 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (confirmBtn) {
         confirmBtn.addEventListener('click', async () => {
             const originalBtnHtml = confirmBtn.innerHTML;
-            confirmBtn.innerHTML = 'Traitement...';
+            confirmBtn.innerHTML = '<span class="material-symbols-rounded spinner">sync</span> Traitement...';
             confirmBtn.disabled = true;
 
             // Gather Data fresh from inputs
@@ -369,9 +369,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const paymentOption = document.getElementById('paymentMethod').selectedOptions[0].text;
             const prescriptionNotes = document.getElementById('prescriptionNotes') ? document.getElementById('prescriptionNotes').value : '';
             const totalPrice = basketTotalAmount ? basketTotalAmount.textContent : '0';
-
-            // Logs for debugging
-            console.log("Tentative d'enregistrement Supabase :", { fullName, phone, deliveryMethodStr, activeOrderType });
 
             try {
                 // 1. Save main order to Supabase
@@ -405,19 +402,42 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
 
-                // 3. Open WhatsApp and close modal
-                const whatsappNumber = '2290194013991';
-                window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(currentFinalMessage)}`, '_blank');
-                modal.classList.add('hidden');
+                // 3. Success UI Update
+                const modalBody = modal.querySelector('.modal-body');
+                const modalFooter = modal.querySelector('.modal-footer');
+                const modalHeader = modal.querySelector('.modal-header h3');
+
+                modalHeader.textContent = "Commande Enregistrée !";
+                modalBody.innerHTML = `
+                    <div class="success-message" style="text-align: center; padding: 20px;">
+                        <span class="material-symbols-rounded" style="font-size: 4rem; color: var(--primary-color); margin-bottom: 15px;">check_circle</span>
+                        <p style="font-size: 1.1rem; margin-bottom: 20px;">Votre commande a été enregistrée avec succès dans notre système.</p>
+                        <p style="color: #666; margin-bottom: 25px;">Pour un traitement plus rapide, nous vous recommandons d'envoyer maintenant le récapitulatif sur WhatsApp.</p>
+                    </div>
+                `;
+
+                modalFooter.innerHTML = `
+                    <button type="button" class="btn-secondary" onclick="window.location.reload()">Terminer</button>
+                    <button type="button" class="btn-primary" id="finalWhatsAppBtn">
+                        <span class="material-symbols-rounded">chat</span> Envoyer sur WhatsApp
+                    </button>
+                `;
+
+                // Add WhatsApp listener
+                document.getElementById('finalWhatsAppBtn').addEventListener('click', () => {
+                    const whatsappNumber = '2290194013991';
+                    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(currentFinalMessage)}`, '_blank');
+                    window.location.reload(); 
+                });
 
             } catch (err) {
                 console.error("Erreur d'enregistrement Supabase :", err);
+                alert("Une erreur est survenue lors de l'enregistrement. Vous pouvez tout de même envoyer la commande via WhatsApp.");
                 
                 // Fallback to WhatsApp even if DB fails
                 const whatsappNumber = '2290194013991';
                 window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(currentFinalMessage)}`, '_blank');
                 modal.classList.add('hidden');
-            } finally {
                 confirmBtn.innerHTML = originalBtnHtml;
                 confirmBtn.disabled = false;
             }
