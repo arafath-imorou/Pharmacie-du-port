@@ -64,17 +64,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Only run if elements exist on page
     if (!searchInput || !searchBtn || !searchModal) return;
 
+    // Helper to format price: 1705 -> 1 705 F CFA
+    const formatPrice = (price) => {
+        if (!price) return "0 F CFA";
+        // Convert to string and use regex for thousands separator
+        const formatted = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        return `${formatted} F CFA`;
+    };
+
     // Search Execution Function
     const executeSearch = () => {
         const query = searchInput.value.trim().toLowerCase();
 
         if (query.length === 0) {
-            // Might want an error or small hint, but normally do nothing
             return;
         }
 
         // 1. Filter Database
-        // We prioritize startsWith for better relevance but also allow includes
         const results = productsDb.filter(product => {
             const name = product.name.toLowerCase();
             const category = product.category.toLowerCase();
@@ -84,7 +90,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 category.includes(query);
         })
         .sort((a, b) => {
-            // Put startsWith matches first
             const aName = a.name.toLowerCase();
             const bName = b.name.toLowerCase();
             const aStarts = aName.startsWith(query);
@@ -115,14 +120,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                     ? `<span class="badge in-stock"><span class="material-symbols-rounded" style="font-size: 14px;">check_circle</span> En stock</span>`
                     : `<span class="badge out-of-stock"><span class="material-symbols-rounded" style="font-size: 14px;">cancel</span> Rupture</span>`;
 
+                // Handle null or undefined description
+                const description = (product.description && product.description !== "null") ? product.description : "";
+                const displayPrice = formatPrice(product.price);
+
                 const cardHTML = `
                     <div class="search-result-card">
                         <div class="card-header">
                             <h4 class="product-name">${product.name}</h4>
-                            <span class="product-price">${product.price}</span>
+                            <span class="product-price">${displayPrice}</span>
                         </div>
                         <p class="product-category">${product.category}</p>
-                        <p class="product-desc">${product.description}</p>
+                        ${description ? `<p class="product-desc">${description}</p>` : ''}
                         <div class="card-footer">
                             ${stockBadge}
                             <a href="order.html" class="btn btn-primary btn-sm" style="padding: 0.5rem 1rem;">Commander</a>

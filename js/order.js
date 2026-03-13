@@ -59,6 +59,14 @@ document.addEventListener('DOMContentLoaded', () => {
         return typeof productsDb !== 'undefined' ? productsDb : [];
     }
 
+    // Helper to format price: 1705 -> 1 705 F CFA
+    const formatPrice = (price) => {
+        if (!price) return "0 F CFA";
+        const val = typeof price === 'number' ? price : parseInt(price.toString().replace(/[^0-9]/g, ''));
+        const formatted = val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        return `${formatted} F CFA`;
+    };
+
     function showSuggestions(query = '') {
         const availableProducts = getProducts();
         const filtered = query === ''
@@ -71,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     name.includes(query) ||
                     category.includes(query);
             }).sort((a, b) => {
-                // Prioritize startsWith
                 const aName = a.name.toLowerCase();
                 const bName = b.name.toLowerCase();
                 const aStarts = aName.startsWith(query);
@@ -85,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
             productSuggestions.innerHTML = filtered.map(p => `
                 <div class="suggestion-item" data-id="${p.id}">
                     <span class="prod-name">${p.name}</span>
-                    <span class="prod-price">${p.price}</span>
+                    <span class="prod-price">${formatPrice(p.price)}</span>
                 </div>
             `).join('');
             productSuggestions.classList.remove('hidden');
@@ -167,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="basket-item">
                 <div class="basket-item-info">
                     <span class="basket-item-name">${item.name}</span>
-                    <span class="basket-item-price">${item.price}</span>
+                    <span class="basket-item-price">${formatPrice(item.price)}</span>
                 </div>
                 <div class="basket-item-actions">
                     <div class="quantity-controls">
@@ -190,10 +197,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let total = 0;
         basket.forEach(item => {
-            const price = parseInt(item.price.replace(/[^0-9]/g, ''));
-            total += price * item.quantity;
+            const val = typeof item.price === 'number' ? item.price : parseInt(item.price.toString().replace(/[^0-9]/g, ''));
+            total += val * item.quantity;
         });
-        basketTotalAmount.textContent = total.toLocaleString() + ' FCFA';
+        basketTotalAmount.textContent = formatPrice(total);
     }
 
     window.updateQty = (id, delta) => updateQuantity(id, delta);
