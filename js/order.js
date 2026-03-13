@@ -479,7 +479,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="success-message" style="text-align: center; padding: 20px;">
                         <span class="material-symbols-rounded" style="font-size: 4rem; color: var(--primary-color); margin-bottom: 15px;">check_circle</span>
                         <p style="font-size: 1.1rem; margin-bottom: 20px;">Votre commande a été enregistrée avec succès dans notre système.</p>
-                        <p style="color: #666; margin-bottom: 25px;">Pour un traitement plus rapide, nous vous recommandons d'envoyer maintenant le récapitulatif sur WhatsApp.</p>
+                        ${activeOrderType === 'prescription-panel' ? `
+                            <div style="background: #fff8e1; border: 1px solid #ffe082; padding: 15px; border-radius: 8px; margin-bottom: 25px; text-align: left;">
+                                <p style="color: #856404; font-weight: 600; margin-bottom: 5px; display: flex; align-items: center; gap: 8px;">
+                                    <span class="material-symbols-rounded">warning</span> Note Importante
+                                </p>
+                                <p style="color: #856404; font-size: 0.95rem;">Le message WhatsApp contiendra un lien vers votre ordonnance. Pour plus de rapidité, <strong>n'oubliez pas de joindre également la photo directement</strong> dans la discussion avec le pharmacien.</p>
+                            </div>
+                        ` : `
+                            <p style="color: #666; margin-bottom: 25px;">Pour un traitement plus rapide, nous vous recommandons d'envoyer maintenant le récapitulatif sur WhatsApp.</p>
+                        `}
                     </div>
                 `;
 
