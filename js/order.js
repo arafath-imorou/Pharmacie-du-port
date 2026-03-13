@@ -275,17 +275,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
                 const notes = document.getElementById('prescriptionNotes') ? document.getElementById('prescriptionNotes').value : 'Aucune';
+                const previewSrc = previewImg.src;
                 orderSummaryHtml = `
                     <div class="recap-row">
                         <span class="label">Type de commande :</span>
                         <span>Ordonnance (Photo)</span>
                     </div>
+                    ${previewSrc ? `
+                    <div class="recap-row" style="flex-direction: column; align-items: flex-start; gap: 10px;">
+                        <span class="label">Aperçu de l'ordonnance :</span>
+                        <div style="width: 100%; max-height: 200px; overflow: hidden; border-radius: 8px; border: 1px solid var(--border-color);">
+                            <img src="${previewSrc}" style="width: 100%; height: auto; display: block;" alt="Ordonnance">
+                        </div>
+                    </div>
+                    ` : ''}
                     <div class="recap-row">
                         <span class="label">Notes :</span>
                         <span>${notes}</span>
                     </div>
                 `;
-                orderSummaryText = `*Type:* Ordonnance (Photo ci-jointe)\n*Notes:* ${notes}`;
+                orderSummaryText = `*Type:* Ordonnance\n*Notes:* ${notes}`;
             } else {
                 if (basket.length === 0) {
                     alert('Votre panier est vide. Veuillez choisir des produits.');
@@ -388,7 +397,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 console.log("Données collectées :", { fullName, phone, deliveryMethodStr, paymentOption, totalPrice });
 
-                // 1. Save main order to Supabase
+                // 1. Handle Prescription Upload if needed
+                let finalPrescriptionUrl = null;
+                if (activeOrderType === 'prescription-panel' && prescriptionFile.files[0]) {
+                    const file = prescriptionFile.files[0];
+                    const fileExt = file.name.split('.').pop();
+                    const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+                    const filePath = `user_prescriptions/${fileName}`;
+
+                    console.log("Téléchargement de l'ordonnance vers Supabase Storage...", filePath);
+                    const { data: uploadData, error: uploadError } = await supabaseClient.storage
+                        .from('prescriptions')
+                        .upload(filePath, file);
+
+                    if (uploadError) {
+                        console.error("Erreur d'upload :", uploadError);
+                        throw new Error("Échec du téléchargement de l'ordonnance.");
+                    }
+
+                    const { data: { publicUrl } } = supabaseClient.storage
+                        .from('prescriptions')
+                        .getPublicUrl(filePath);
+                    
+                    finalPrescriptionUrl = publicUrl;
+                    console.log("Ordonnance disponible à :", finalPrescriptionUrl);
+                    
+                    // Update the final message with the URL
+                    currentFinalMessage += `\n*LIEN ORDONNANCE :* ${finalPrescriptionUrl}`;
+                }
+
+                // 2. Save main order to Supabase
                 console.log("Insertion dans la table 'orders'...");
                 const { data: orderData, error: orderError } = await supabaseClient.from('orders').insert([
                     {
@@ -398,6 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         delivery_address: deliveryAddressVal,
                         payment_method: paymentOption,
                         prescription_notes: activeOrderType === 'prescription-panel' ? prescriptionNotes : null,
+                        prescription_url: finalPrescriptionUrl,
                         total_price: activeOrderType !== 'prescription-panel' ? totalPrice : 'N/A'
                     }
                 ]).select();
