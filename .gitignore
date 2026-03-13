@@ -10,3 +10,14 @@ Thumbs.db
 _agents/
 _agent/
 tmp/
+# temp scripts and data
+*.sql
+*.xlsx
+*.json
+extract_products*.js
+generate_sql.js
+split_*.js
+count_rows.js
+analyze_cells.js
+temp_xlsx/
+temp_xlsx_2/

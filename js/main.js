@@ -85,10 +85,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 // Construct WhatsApp Message
-                const waNumber = "0194013991"; // Pharmacie du Port WhatsApp
-                const waText = `Bonjour Pharmacie du Port,%0A%0ANouveau message de contact :%0A- *Nom* : ${name}%0A- *Email* : ${email}%0A- *Objet* : ${subject}%0A- *Téléphone* : ${phone}%0A- *Message* :%0A${message}`;
+                // Construct WhatsApp Message
+                const waNumber = "2290194013991"; // Pharmacie du Port WhatsApp (International format)
+                const rawText = `Bonjour Pharmacie du Port,\n\nNouveau message de contact :\n- *Nom* : ${name}\n- *Email* : ${email}\n- *Objet* : ${subject}\n- *Téléphone* : ${phone}\n- *Message* :\n${message}`;
+                const waText = encodeURIComponent(rawText);
                 
-                const waUrl = `https://wa.me/229${waNumber}?text=${waText}`;
+                const waUrl = `https://wa.me/${waNumber}?text=${waText}`;
 
                 alert("Votre message a été enregistré ! Vous allez être redirigé vers WhatsApp pour envoyer le récapitulatif.");
                 
@@ -109,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // WhatsApp Floating Button Injection
     const injectWhatsAppButton = () => {
         const waButton = document.createElement('a');
-        waButton.href = 'https://wa.me/0194013991';
+        waButton.href = 'https://wa.me/2290194013991';
         waButton.className = 'whatsapp-float';
         waButton.target = '_blank';
         waButton.rel = 'noopener noreferrer';

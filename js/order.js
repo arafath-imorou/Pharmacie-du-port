@@ -378,7 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 // 3. Open WhatsApp and close modal
-                const whatsappNumber = '0194013991';
+                const whatsappNumber = '2290194013991';
                 window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(finalMessage)}`, '_blank');
                 modal.classList.add('hidden');
 
@@ -387,7 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert("Une erreur de réseau s'est produite, mais vous allez être redirigé vers WhatsApp pour finaliser.");
 
                 // Fallback to WhatsApp even if DB fails
-                const whatsappNumber = '0194013991';
+                const whatsappNumber = '2290194013991';
                 window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(finalMessage)}`, '_blank');
                 modal.classList.add('hidden');
             } finally {
