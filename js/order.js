@@ -3,9 +3,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Tabs Logic ---
     const tabs = document.querySelectorAll('.order-tab');
     const tabContents = document.querySelectorAll('.tab-content');
+    const prescriptionInput = document.getElementById('prescriptionFile');
     
     // Track active tab robustly
     let activeOrderType = 'prescription-panel'; // matches the default 'active' class in HTML
+    
+    // Initial setup for required attribute
+    if (prescriptionInput) prescriptionInput.required = true;
 
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
@@ -17,6 +21,15 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById(targetId).classList.remove('hidden');
             activeOrderType = targetId;
             console.log("Tab changée vers :", activeOrderType);
+            
+            // Manage required attribute dynamically
+            if (prescriptionInput) {
+                if (activeOrderType === 'prescription-panel') {
+                    prescriptionInput.required = true;
+                } else {
+                    prescriptionInput.required = false;
+                }
+            }
         });
     });
 
