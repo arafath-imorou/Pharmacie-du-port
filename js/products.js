@@ -7,6 +7,24 @@ let productsDb = [];
 document.addEventListener('DOMContentLoaded', async () => {
 
     // Fetch all products from Supabase using pagination
+    // 1. Try to load from Cache first
+    const CACHE_KEY = 'pharmacy_products_cache';
+    const cachedData = sessionStorage.getItem(CACHE_KEY);
+
+    if (cachedData) {
+        try {
+            productsDb = JSON.parse(cachedData);
+            console.log(`${productsDb.length} produits chargés depuis le cache local.`);
+            // Initial render of search if query exists
+            if (searchInput && searchInput.value) executeSearch();
+            return; // Exit early if cache hit
+        } catch (e) {
+            console.warn("Échec du chargement du cache :", e);
+            sessionStorage.removeItem(CACHE_KEY);
+        }
+    }
+
+    // 2. Fetch from Supabase if No Cache
     try {
         let allProducts = [];
         let from = 0;
@@ -33,7 +51,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }));
                 allProducts.push(...mapped);
                 
-                // If we got fewer than 1000, we've reached the end
                 if (data.length < 1000) {
                     finished = true;
                 } else {
@@ -44,6 +61,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 finished = true;
             }
         }
+
         // Deduplicate by name and category to avoid UI duplicates
         const uniqueProducts = [];
         const seen = new Set();
@@ -57,7 +75,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
 
         productsDb = uniqueProducts;
-        console.log(`${productsDb.length} produits uniques chargés dans le cache.`);
+
+        // Save to cache for next page load/refresh
+        sessionStorage.setItem(CACHE_KEY, JSON.stringify(productsDb));
+        console.log(`${productsDb.length} produits uniques chargés et mis en cache.`);
+        
+        // Initial render if query was typed while loading
+        if (searchInput && searchInput.value) executeSearch();
+
     } catch (err) {
         console.error("Erreur de chargement des produits :", err);
     }
