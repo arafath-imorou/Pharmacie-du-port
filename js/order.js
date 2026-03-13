@@ -231,11 +231,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModal = document.getElementById('closeConfirmationModal');
     const confirmationDetails = document.getElementById('confirmationDetails');
 
-    let finalMessage = '';
+    // Declare in outer scope to ensure accessibility
+    let currentFinalMessage = '';
 
     function showConfirmationModal() {
-        const fullName = document.getElementById('fullName').value;
-        const phone = document.getElementById('phone').value;
+        const fullNameInput = document.getElementById('fullName');
+        const phoneInput = document.getElementById('phone');
+        
+        const fullName = fullNameInput ? fullNameInput.value.trim() : '';
+        const phone = phoneInput ? phoneInput.value.trim() : '';
+
+        if (!fullName || !phone) {
+            alert('Veuillez remplir votre nom et numéro de téléphone.');
+            return;
+        }
+
         const activeTab = document.querySelector('.order-tab.active').getAttribute('data-target');
 
         let orderSummaryHtml = '';
@@ -265,7 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const itemsHtml = basket.map(item => `
                 <div class="recap-item">
                     <span>${item.name} (x${item.quantity})</span>
-                    <span>${item.price}</span>
+                    <span>${formatPrice(item.price)}</span>
                 </div>
             `).join('');
 
@@ -283,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
 
-            const itemsListText = basket.map(item => `- ${item.name} (x${item.quantity}) - ${item.price}`).join('\n');
+            const itemsListText = basket.map(item => `- ${item.name} (x${item.quantity}) - ${formatPrice(item.price)}`).join('\n');
             orderSummaryText = `*Type:* Commande de produits\n*Produits:*\n${itemsListText}\n\n*TOTAL :* ${basketTotalAmount.textContent}`;
         }
 
@@ -315,13 +325,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         confirmationDetails.innerHTML = html;
 
-        finalMessage = `*COMMANDE EN LIGNE - PHARMACIE DU PORT*\n\n`;
-        finalMessage += `*CLIENT :* ${fullName}\n`;
-        finalMessage += `*TEL :* ${phone}\n\n`;
-        finalMessage += `${orderSummaryText}\n\n`;
-        finalMessage += `*MODE DE RÉCEPTION :* ${deliveryText}\n`;
-        finalMessage += `*MODE DE PAIEMENT :* ${payment}\n\n`;
-        finalMessage += `_Merci de confirmer ma commande._`;
+        currentFinalMessage = `*COMMANDE EN LIGNE - PHARMACIE DU PORT*\n\n`;
+        currentFinalMessage += `*CLIENT :* ${fullName}\n`;
+        currentFinalMessage += `*TEL :* ${phone}\n\n`;
+        currentFinalMessage += `${orderSummaryText}\n\n`;
+        currentFinalMessage += `*MODE DE RÉCEPTION :* ${deliveryText}\n`;
+        currentFinalMessage += `*MODE DE PAIEMENT :* ${payment}\n\n`;
+        currentFinalMessage += `_Merci de confirmer ma commande._`;
 
         modal.classList.remove('hidden');
     }
@@ -335,15 +345,18 @@ document.addEventListener('DOMContentLoaded', () => {
             confirmBtn.innerHTML = 'Traitement...';
             confirmBtn.disabled = true;
 
-            // Gather Data
-            const fullName = document.getElementById('fullName').value;
-            const phone = document.getElementById('phone').value;
+            // Gather Data fresh from inputs
+            const fullName = document.getElementById('fullName').value.trim();
+            const phone = document.getElementById('phone').value.trim();
             const deliveryMethodStr = document.getElementById('deliveryMethod').value;
-            const deliveryAddress = document.getElementById('deliveryAddress').value;
+            const deliveryAddressVal = document.getElementById('deliveryAddress').value;
             const paymentMethod = document.getElementById('paymentMethod').selectedOptions[0].text;
             const activeTab = document.querySelector('.order-tab.active').getAttribute('data-target');
             const prescriptionNotes = document.getElementById('prescriptionNotes') ? document.getElementById('prescriptionNotes').value : '';
             const totalPrice = basketTotalAmount ? basketTotalAmount.textContent : '0';
+
+            // Logs for debugging
+            console.log("Tentative d'enregistrement Supabase :", { fullName, phone, deliveryMethodStr });
 
             try {
                 // 1. Save main order to Supabase
@@ -352,12 +365,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         client_name: fullName,
                         client_phone: phone,
                         delivery_method: deliveryMethodStr,
-                        delivery_address: deliveryAddress,
+                        delivery_address: deliveryAddressVal,
                         payment_method: paymentMethod,
                         prescription_notes: activeTab === 'prescription-panel' ? prescriptionNotes : null,
                         total_price: activeTab !== 'prescription-panel' ? totalPrice : 'N/A'
                     }
-                ]).select(); // select() is needed to return the ID of the created row
+                ]).select();
 
                 if (orderError) throw orderError;
 
@@ -369,7 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             order_id: newOrderId,
                             product_name: item.name,
                             quantity: item.quantity,
-                            price: item.price
+                            price: typeof item.price === 'number' ? item.price : parseInt(item.price.toString().replace(/[^0-9]/g, ''))
                         }));
 
                         const { error: itemsError } = await supabaseClient.from('order_items').insert(itemsToInsert);
@@ -379,16 +392,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // 3. Open WhatsApp and close modal
                 const whatsappNumber = '2290194013991';
-                window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(finalMessage)}`, '_blank');
+                window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(currentFinalMessage)}`, '_blank');
                 modal.classList.add('hidden');
 
             } catch (err) {
                 console.error("Erreur d'enregistrement Supabase :", err);
-                alert("Une erreur de réseau s'est produite, mais vous allez être redirigé vers WhatsApp pour finaliser.");
-
+                
                 // Fallback to WhatsApp even if DB fails
                 const whatsappNumber = '2290194013991';
-                window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(finalMessage)}`, '_blank');
+                window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(currentFinalMessage)}`, '_blank');
                 modal.classList.add('hidden');
             } finally {
                 confirmBtn.innerHTML = originalBtnHtml;
