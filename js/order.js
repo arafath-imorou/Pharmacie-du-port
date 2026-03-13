@@ -54,15 +54,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const basketSummary = document.getElementById('basketSummary');
     const basketTotalAmount = document.getElementById('basketTotalAmount');
 
-    const products = typeof productsDb !== 'undefined' ? productsDb : [];
+    // Access products from the global productsDb (populated by products.js)
+    function getProducts() {
+        return typeof productsDb !== 'undefined' ? productsDb : [];
+    }
 
     function showSuggestions(query = '') {
+        const availableProducts = getProducts();
         const filtered = query === ''
-            ? products
-            : products.filter(p =>
-                p.name.toLowerCase().includes(query) ||
-                p.category.toLowerCase().includes(query)
-            );
+            ? availableProducts.slice(0, 500)
+            : availableProducts.filter(p => {
+                const name = p.name.toLowerCase();
+                const category = p.category.toLowerCase();
+                return name.startsWith(query) ||
+                    category.startsWith(query) ||
+                    name.includes(query) ||
+                    category.includes(query);
+            }).sort((a, b) => {
+                // Prioritize startsWith
+                const aName = a.name.toLowerCase();
+                const bName = b.name.toLowerCase();
+                const aStarts = aName.startsWith(query);
+                const bStarts = bName.startsWith(query);
+                if (aStarts && !bStarts) return -1;
+                if (!aStarts && bStarts) return 1;
+                return aName.localeCompare(bName);
+            }).slice(0, 500);
 
         if (filtered.length > 0) {
             productSuggestions.innerHTML = filtered.map(p => `
@@ -98,8 +115,8 @@ document.addEventListener('DOMContentLoaded', () => {
         productSuggestions.addEventListener('click', (e) => {
             const item = e.target.closest('.suggestion-item');
             if (item && item.dataset.id) {
-                const id = parseInt(item.dataset.id);
-                const product = products.find(p => p.id === id);
+                const id = item.dataset.id;
+                const product = getProducts().find(p => String(p.id) === String(id));
                 if (product) {
                     addToBasket(product);
                     productSearch.value = '';
@@ -110,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function addToBasket(product) {
-        const existing = basket.find(item => item.id === product.id);
+        const existing = basket.find(item => String(item.id) === String(product.id));
         if (existing) {
             existing.quantity++;
         } else {
@@ -323,7 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 // 1. Save main order to Supabase
-                const { data: orderData, error: orderError } = await window.supabase.from('orders').insert([
+                const { data: orderData, error: orderError } = await supabaseClient.from('orders').insert([
                     {
                         client_name: fullName,
                         client_phone: phone,
@@ -340,7 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 2. Save order items if it's a catalog order
                 if (orderData && orderData.length > 0) {
                     const newOrderId = orderData[0].id;
-                    if (activeTab === 'catalog-panel' && basket.length > 0) {
+                    if (activeTab === 'list-panel' && basket.length > 0) {
                         const itemsToInsert = basket.map(item => ({
                             order_id: newOrderId,
                             product_name: item.name,
@@ -348,7 +365,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             price: item.price
                         }));
 
-                        const { error: itemsError } = await window.supabase.from('order_items').insert(itemsToInsert);
+                        const { error: itemsError } = await supabaseClient.from('order_items').insert(itemsToInsert);
                         if (itemsError) throw itemsError;
                     }
                 }

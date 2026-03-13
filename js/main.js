@@ -77,18 +77,28 @@ document.addEventListener('DOMContentLoaded', () => {
             const message = document.getElementById('contactMessage').value;
 
             try {
-                // Insert into Supabase
-                const { error } = await window.supabase.from('contact_messages').insert([
-                    { name, email, subject, phone, message }
-                ]);
+                // Non-blocking attempt to insert into Supabase
+                supabaseClient.from('contact_messages').insert([{
+                    name, email, subject, phone, message
+                }]).then(({ error }) => {
+                    if (error) console.warn("Supabase backup recording failed:", error);
+                });
 
-                if (error) throw error;
+                // Construct WhatsApp Message
+                const waNumber = "0194013991"; // Pharmacie du Port WhatsApp
+                const waText = `Bonjour Pharmacie du Port,%0A%0ANouveau message de contact :%0A- *Nom* : ${name}%0A- *Email* : ${email}%0A- *Objet* : ${subject}%0A- *Téléphone* : ${phone}%0A- *Message* :%0A${message}`;
+                
+                const waUrl = `https://wa.me/229${waNumber}?text=${waText}`;
 
-                alert("Votre message a été envoyé avec succès ! Nous vous recontacterons bientôt.");
+                alert("Votre message a été enregistré ! Vous allez être redirigé vers WhatsApp pour envoyer le récapitulatif.");
+                
+                // Open WhatsApp
+                window.open(waUrl, '_blank');
+                
                 contactForm.reset();
             } catch (err) {
-                console.error("Erreur lors de l'envoi du message :", err);
-                alert("Une erreur est survenue lors de l'envoi de votre message. Veuillez réessayer plus tard.");
+                console.error("Erreur inattendue :", err);
+                alert("Une erreur est survenue. Vous pouvez quand même nous contacter directement par WhatsApp.");
             } finally {
                 submitBtn.textContent = originalText;
                 submitBtn.disabled = false;

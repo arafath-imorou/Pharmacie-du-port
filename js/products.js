@@ -8,7 +8,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Fetch products from Supabase
     try {
-        const { data, error } = await supabase.from('products').select('*').order('name');
+        // Increased range to 2000 to ensure all 1394 products are loaded
+        const { data, error } = await supabaseClient
+            .from('products')
+            .select('*')
+            .range(0, 2000)
+            .order('name');
         if (error) throw error;
         productsDb = data ? data.map(p => ({
             id: p.id,
@@ -46,11 +51,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         // 1. Filter Database
+        // We prioritize startsWith for better relevance but also allow includes
         const results = productsDb.filter(product => {
-            return product.name.toLowerCase().includes(query) ||
-                product.category.toLowerCase().includes(query) ||
-                product.description.toLowerCase().includes(query);
-        });
+            const name = product.name.toLowerCase();
+            const category = product.category.toLowerCase();
+            return name.startsWith(query) ||
+                category.startsWith(query) ||
+                name.includes(query) ||
+                category.includes(query);
+        })
+        .sort((a, b) => {
+            // Put startsWith matches first
+            const aName = a.name.toLowerCase();
+            const bName = b.name.toLowerCase();
+            const aStarts = aName.startsWith(query);
+            const bStarts = bName.startsWith(query);
+            if (aStarts && !bStarts) return -1;
+            if (!aStarts && bStarts) return 1;
+            return aName.localeCompare(bName);
+        })
+        .slice(0, 500);
 
         // 2. Update Header Infos
         searchTermDisplay.textContent = `"${searchInput.value}"`;
