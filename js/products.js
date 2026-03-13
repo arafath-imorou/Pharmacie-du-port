@@ -6,23 +6,46 @@ let productsDb = [];
 // Wait for DOM to load
 document.addEventListener('DOMContentLoaded', async () => {
 
-    // Fetch products from Supabase
+    // Fetch all products from Supabase using pagination
     try {
-        // Increased range to 2000 to ensure all 1394 products are loaded
-        const { data, error } = await supabaseClient
-            .from('products')
-            .select('*')
-            .range(0, 2000)
-            .order('name');
-        if (error) throw error;
-        productsDb = data ? data.map(p => ({
-            id: p.id,
-            name: p.name,
-            category: p.category,
-            price: p.price,
-            inStock: p.in_stock,
-            description: p.description
-        })) : [];
+        let allProducts = [];
+        let from = 0;
+        let to = 999;
+        let finished = false;
+
+        while (!finished) {
+            const { data, error } = await supabaseClient
+                .from('products')
+                .select('*')
+                .range(from, to)
+                .order('name');
+
+            if (error) throw error;
+            
+            if (data && data.length > 0) {
+                const mapped = data.map(p => ({
+                    id: p.id,
+                    name: p.name,
+                    category: p.category,
+                    price: p.price,
+                    inStock: p.in_stock,
+                    description: p.description
+                }));
+                allProducts.push(...mapped);
+                
+                // If we got fewer than 1000, we've reached the end
+                if (data.length < 1000) {
+                    finished = true;
+                } else {
+                    from += 1000;
+                    to += 1000;
+                }
+            } else {
+                finished = true;
+            }
+        }
+        productsDb = allProducts;
+        console.log(`${productsDb.length} produits chargés dans le cache.`);
     } catch (err) {
         console.error("Erreur de chargement des produits :", err);
     }
