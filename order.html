@@ -226,12 +226,17 @@
                                         <option value="pickup">Retrait rapide en pharmacie (Gratuit)</option>
                                     </select>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group" style="grid-column: 1 / -1;">
                                     <label for="paymentMethod">Mode de paiement préféré *</label>
+                                    <p class="help-text" style="color: var(--primary-color); font-weight: 500; font-size: 0.9rem; margin-bottom: 0.5rem; margin-top: 0;">
+                                        (Le paiement se fait après avoir reçu la confirmation de votre commande via WhatsApp)
+                                    </p>
                                     <select id="paymentMethod" required>
-                                        <option value="mobile_money">Mobile Money (MoMo / Celtiis)</option>
+                                        <option value="" disabled selected>Choisir un mode de paiement...</option>
+                                        <option value="mtn">MTN MOMO PAY (*880*41*118118*Montant#)</option>
+                                        <option value="moov">MOOV PAY (*855*4*1*10687#)</option>
                                         <option value="cash">Espèces à la réception</option>
-                                        <option value="card">Carte bancaire (Au guichet uniquement)</option>
+                                        <option value="card">Carte Bancaire (Au guichet uniquement)</option>
                                     </select>
                                 </div>
                             </div>
