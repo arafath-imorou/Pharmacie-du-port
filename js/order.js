@@ -369,21 +369,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (confirmBtn) {
         confirmBtn.addEventListener('click', async () => {
+            console.log("Tentative d'enregistrement de la commande...");
             const originalBtnHtml = confirmBtn.innerHTML;
             confirmBtn.innerHTML = '<span class="material-symbols-rounded spinner">sync</span> Traitement...';
             confirmBtn.disabled = true;
 
-            // Gather Data fresh from inputs
-            const fullName = document.getElementById('fullName').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-            const deliveryMethodStr = document.getElementById('deliveryMethod').value;
-            const deliveryAddressVal = document.getElementById('deliveryAddress').value;
-            const paymentOption = document.getElementById('paymentMethod').selectedOptions[0].text;
-            const prescriptionNotes = document.getElementById('prescriptionNotes') ? document.getElementById('prescriptionNotes').value : '';
-            const totalPrice = basketTotalAmount ? basketTotalAmount.textContent : '0';
-
             try {
+                // Gather Data fresh from inputs
+                const fullName = document.getElementById('fullName').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const deliveryEl = document.getElementById('deliveryMethod');
+                const deliveryMethodStr = deliveryEl ? deliveryEl.value : 'pickup';
+                const deliveryAddressVal = document.getElementById('deliveryAddress') ? document.getElementById('deliveryAddress').value : '';
+                const paymentEl = document.getElementById('paymentMethod');
+                const paymentOption = (paymentEl && paymentEl.selectedOptions[0]) ? paymentEl.selectedOptions[0].text : 'N/A';
+                const prescriptionNotes = document.getElementById('prescriptionNotes') ? document.getElementById('prescriptionNotes').value : '';
+                const totalPrice = basketTotalAmount ? basketTotalAmount.textContent : '0';
+
+                console.log("Données collectées :", { fullName, phone, deliveryMethodStr, paymentOption, totalPrice });
+
                 // 1. Save main order to Supabase
+                console.log("Insertion dans la table 'orders'...");
                 const { data: orderData, error: orderError } = await supabaseClient.from('orders').insert([
                     {
                         client_name: fullName,
@@ -396,12 +402,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 ]).select();
 
-                if (orderError) throw orderError;
+                if (orderError) {
+                    console.error("Erreur lors de l'insertion 'orders' :", orderError);
+                    throw orderError;
+                }
+                console.log("Commande insérée avec succès, ID :", orderData && orderData[0] ? orderData[0].id : "inconnu");
 
                 // 2. Save order items if it's a catalog order
                 if (orderData && orderData.length > 0) {
                     const newOrderId = orderData[0].id;
                     if (activeOrderType === 'list-panel' && basket.length > 0) {
+                        console.log(`Insertion de ${basket.length} articles pour la commande ${newOrderId}...`);
                         const itemsToInsert = basket.map(item => ({
                             order_id: newOrderId,
                             product_name: item.name,
@@ -410,11 +421,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         }));
 
                         const { error: itemsError } = await supabaseClient.from('order_items').insert(itemsToInsert);
-                        if (itemsError) throw itemsError;
+                        if (itemsError) {
+                            console.error("Erreur lors de l'insertion 'order_items' :", itemsError);
+                            throw itemsError;
+                        }
+                        console.log("Articles insérés avec succès.");
                     }
                 }
 
                 // 3. Success UI Update
+                console.log("Mise à jour de l'interface vers le succès...");
                 const modalBody = modal.querySelector('.modal-body');
                 const modalFooter = modal.querySelector('.modal-footer');
                 const modalHeader = modal.querySelector('.modal-header h3');
@@ -443,7 +459,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
             } catch (err) {
-                console.error("Erreur d'enregistrement Supabase :", err);
+                console.error("Erreur globale dans le processus d'enregistrement :", err);
                 alert("Une erreur est survenue lors de l'enregistrement. Vous pouvez tout de même envoyer la commande via WhatsApp.");
                 
                 // Fallback to WhatsApp even if DB fails
