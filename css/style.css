@@ -61,6 +61,44 @@ img {
     pointer-events: none;
 }
 
+/* Fix FOIT/FOUC: Keep content hidden but preloader visible */
+body.loading #site-preloader {
+    visibility: visible;
+    opacity: 1;
+}
+
+body.loading > *:not(#site-preloader):not(script) {
+    visibility: hidden;
+}
+
+body.loading {
+    overflow: hidden; /* Prevent scrolling during load */
+}
+
+/* Material Symbols Rendering Strategy: 
+   Hide the text content until the font is loaded to prevent "text weirdness" */
+.material-symbols-rounded {
+    font-family: 'Material Symbols Rounded';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+    
+    /* Crucial: visibility ensures text is not seen if font is missing/loading */
+    width: 1em;
+    height: 1em;
+    overflow: hidden;
+}
+
 .loader-spinner {
     width: 50px;
     height: 50px;
@@ -94,9 +132,7 @@ img {
 }
 
 /* Fix FOIT: Keep body invisible until font/content is ready */
-body.loading {
-    visibility: hidden;
-}
+/* (Handled more precisely above with body.loading > *:not(#site-preloader)) */
 
 /* ============================================================ */
 
