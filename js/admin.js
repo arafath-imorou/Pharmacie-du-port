@@ -74,7 +74,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (targetId === 'messages-panel') loadMessages();
             if (targetId === 'orders-panel') loadOrders();
             if (targetId === 'blog-panel') loadArticles();
-            if (targetId === 'dashboard-panel') loadProducts();
+            if (targetId === 'dashboard-panel') {
+                // Reset category filter to "all" when switching to products tab
+                document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                document.querySelector('.category-tab[data-category="all"]').classList.add('active');
+                loadProducts();
+            }
             if (targetId === 'pages-panel') loadPageContent();
         });
     });
@@ -91,9 +96,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     let isEditing = false;
 
     // Load Products
-    async function loadProducts() {
+    async function loadProducts(category = 'all') {
         productsTableBody.innerHTML = '<tr><td colspan="6" class="loading-state">Chargement...</td></tr>';
-        const { data, error } = await supabaseClient.from('products').select('*').order('id', { ascending: false });
+        
+        let query = supabaseClient.from('products').select('*').order('id', { ascending: false });
+        
+        if (category !== 'all') {
+            query = query.eq('category', category);
+        }
+
+        const { data, error } = await query;
 
         if (error) {
             productsTableBody.innerHTML = '<tr><td colspan="6" class="loading-state">Erreur de chargement</td></tr>';
@@ -101,7 +113,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         if (data.length === 0) {
-            productsTableBody.innerHTML = '<tr><td colspan="6" class="loading-state">Aucun produit dans la base</td></tr>';
+            productsTableBody.innerHTML = '<tr><td colspan="6" class="loading-state">Aucun produit dans cette catégorie</td></tr>';
             return;
         }
 
@@ -129,6 +141,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             </tr>
         `).join('');
     }
+
+    // Category Tabs Logic
+    const categoryTabs = document.querySelectorAll('.category-tab');
+    categoryTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            categoryTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const category = tab.getAttribute('data-category');
+            loadProducts(category);
+        });
+    });
 
     // Modal Control
     addBtn.addEventListener('click', () => {
@@ -261,37 +284,155 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         if (data.length === 0) {
-            ordersTableBody.innerHTML = '<tr><td colspan="5" class="loading-state">Aucune commande sauvegardée.</td></tr>';
+            ordersTableBody.innerHTML = '<tr><td colspan="6" class="loading-state">Aucune commande sauvegardée.</td></tr>';
             return;
         }
 
         ordersTableBody.innerHTML = data.map(o => {
             const dateStr = new Date(o.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
-            let detailsHtml = '';
-            if (o.prescription_notes) {
-                detailsHtml = `<em>Ordonnance jointe sur WA</em><br><small>Notes: ${o.prescription_notes}</small>`;
-            } else if (o.order_items && o.order_items.length > 0) {
-                detailsHtml = `<ul style="margin:0; padding-left:16px; font-size:0.85rem; color:#4a5568">` +
-                    o.order_items.map(i => `<li>${i.product_name} (x${i.quantity})</li>`).join('')
-                    + `</ul>`;
-            }
-
             return `
             <tr>
                 <td style="font-size:0.85rem; color:#718096">${dateStr}</td>
                 <td>
                     <strong style="color:#2d3748">${o.client_name}</strong>
-                    <div style="margin-top:8px">${detailsHtml}</div>
+                    ${o.prescription_url ? '<br><span class="badge-admin badge-success" style="font-size:0.6rem">ORDONNANCE</span>' : ''}
                 </td>
                 <td><a href="tel:${o.client_phone}" style="color:var(--primary-color)">${o.client_phone}</a></td>
-                <td>
-                    ${o.delivery_method === 'delivery' ? 'Livraison' : 'Retrait'}
-                    ${o.delivery_address ? `<br><small style="color:#718096">${o.delivery_address}</small>` : ''}
-                </td>
                 <td style="font-weight:bold">${o.total_price}</td>
+                <td>
+                    <div class="action-btns">
+                        <button class="action-btn" onclick="viewOrder(${o.id})" title="Voir détails">
+                            <span class="material-symbols-rounded" style="font-size:20px">visibility</span>
+                        </button>
+                    </div>
+                </td>
             </tr>
         `}).join('');
+    }
+
+    // View Order Details
+    window.viewOrder = async (id) => {
+        const orderDetailModal = document.getElementById('orderDetailModal');
+        const detailContent = document.getElementById('orderDetailContent');
+        
+        orderDetailModal.classList.add('active');
+        detailContent.innerHTML = '<div class="loading-state">Chargement...</div>';
+
+        const { data: order, error } = await supabaseClient
+            .from('orders')
+            .select('*, order_items(*)')
+            .eq('id', id)
+            .single();
+
+        if (error || !order) {
+            detailContent.innerHTML = '<div class="loading-state">Erreur lors du chargement des détails.</div>';
+            return;
+        }
+
+        const dateStr = new Date(order.created_at).toLocaleString('fr-FR');
+        
+        let itemsTable = '';
+        if (order.order_items && order.order_items.length > 0) {
+            itemsTable = `
+                <table class="data-table" style="margin-top: 15px; border: 1px solid #e2e8f0;">
+                    <thead>
+                        <tr style="background: #f8fafc;">
+                            <th style="padding: 10px;">Produit</th>
+                            <th style="padding: 10px;">Qté</th>
+                            <th style="padding: 10px;">Prix</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${order.order_items.map(item => `
+                            <tr>
+                                <td style="padding: 10px;">${item.product_name}</td>
+                                <td style="padding: 10px;">x${item.quantity}</td>
+                                <td style="padding: 10px;">${item.price}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        detailContent.innerHTML = `
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                <div>
+                    <h4 style="margin: 0 0 5px 0; color: #718096; font-size: 0.8rem; text-transform: uppercase;">Informations Client</h4>
+                    <p style="margin: 0; font-weight: 600;">${order.client_name}</p>
+                    <p style="margin: 0; font-size: 0.9rem;">${order.client_phone}</p>
+                </div>
+                <div>
+                    <h4 style="margin: 0 0 5px 0; color: #718096; font-size: 0.8rem; text-transform: uppercase;">Détails Commande</h4>
+                    <p style="margin: 0; font-size: 0.9rem;">Date: ${dateStr}</p>
+                    <p style="margin: 0; font-size: 0.9rem;">Méthode: ${order.delivery_method === 'delivery' ? 'Livraison' : 'Retrait'}</p>
+                </div>
+            </div>
+
+            ${order.delivery_address ? `
+            <div style="margin-bottom: 20px; padding: 12px; background: #f8fafc; border-radius: 8px;">
+                <h4 style="margin: 0 0 5px 0; color: #718096; font-size: 0.8rem; text-transform: uppercase;">Adresse de Livraison</h4>
+                <p style="margin: 0; font-size: 0.95rem;">${order.delivery_address}</p>
+            </div>
+            ` : ''}
+
+            ${order.prescription_url ? `
+            <div style="margin-bottom: 20px; padding: 12px; background: #e3f2fd; border: 1px solid #bbdefb; border-radius: 8px;">
+                <h4 style="margin: 0 0 8px 0; color: #0288d1; font-size: 0.8rem; text-transform: uppercase; display: flex; align-items: center; gap: 5px;">
+                    <span class="material-symbols-rounded" style="font-size: 18px;">description</span> Ordonnance attachée
+                </h4>
+                <a href="${order.prescription_url}" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; color: #1565c0; text-decoration: none; font-weight: 500;">
+                    <span class="material-symbols-rounded">open_in_new</span> Voir l'ordonnance
+                </a>
+                ${order.prescription_notes ? `<p style="margin: 8px 0 0 0; font-style: italic; font-size: 0.85rem; color: #455a64;">Note: ${order.prescription_notes}</p>` : ''}
+            </div>
+            ` : ''}
+
+            <h4 style="margin: 20px 0 10px 0; color: #718096; font-size: 0.8rem; text-transform: uppercase;">Récapitulatif Articles</h4>
+            ${itemsTable || '<p style="font-style: italic; color: #a0aec0;">Aucun article listé (Commande par ordonnance direct)</p>'}
+
+            <div style="margin-top: 20px; display: flex; justify-content: flex-end; align-items: center; gap: 15px;">
+                <span style="font-size: 1.1rem; color: #4a5568;">Total:</span>
+                <span style="font-size: 1.4rem; font-weight: 800; color: var(--primary-color);">${order.total_price}</span>
+            </div>
+        `;
+    };
+
+    // Close Order Detail Modal
+    const closeOrderDetailBtn = document.getElementById('closeOrderDetailBtn');
+    if (closeOrderDetailBtn) {
+        closeOrderDetailBtn.addEventListener('click', () => {
+            document.getElementById('orderDetailModal').classList.remove('active');
+        });
+    }
+
+    // Print Logic
+    const printOrderBtn = document.getElementById('printOrderBtn');
+    if (printOrderBtn) {
+        printOrderBtn.addEventListener('click', () => {
+            const printContent = document.getElementById('orderDetailContent').innerHTML;
+            const originalContent = document.body.innerHTML;
+            
+            // Create a simple print view
+            document.body.innerHTML = `
+                <div style="padding: 40px; font-family: sans-serif;">
+                    <div style="text-align: center; margin-bottom: 30px;">
+                        <h1 style="color: #1a8e3e; margin: 0;">Pharmacie du Port</h1>
+                        <p style="margin: 5px 0;">Bon de Commande Web</p>
+                    </div>
+                    ${printContent}
+                    <div style="margin-top: 50px; border-top: 1px dashed #ccc; padding-top: 20px; text-align: center; font-size: 0.8rem; color: #666;">
+                        Généré le ${new Date().toLocaleString('fr-FR')} - Pharmacie du Port
+                    </div>
+                </div>
+            `;
+            
+            window.print();
+            
+            // Restore page
+            window.location.reload(); 
+        });
     }
 
     // ----------------------------------------------------

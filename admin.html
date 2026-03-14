@@ -155,6 +155,34 @@
             display: block;
         }
 
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+
+        .category-tab {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #718096;
+        }
+
+        .category-tab:hover {
+            background-color: #f1f5f9;
+        }
+
+        .category-tab.active {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+        }
+
         /* Tables & Lists generic styles */
         .data-table-container {
             overflow-x: auto;
@@ -369,6 +397,12 @@
                 </button>
             </div>
 
+            <div class="category-tabs">
+                <div class="category-tab active" data-category="all">Tous</div>
+                <div class="category-tab" data-category="Pharmacie">Pharmacie</div>
+                <div class="category-tab" data-category="Parapharmacie">Parapharmacie</div>
+            </div>
+
             <div class="data-table-container">
                 <table class="data-table">
                     <thead>
@@ -454,6 +488,7 @@
                             <th>Client</th>
                             <th>Téléphone</th>
                             <th>Total</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="ordersTableBody">
@@ -586,6 +621,31 @@
                     <button type="submit" class="btn btn-primary" id="saveArticleBtn">Publier</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Order Detail Modal -->
+    <div class="modal-overlay" id="orderDetailModal">
+        <div class="modal-content" style="max-width: 650px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <h2 style="margin:0; color:#1a202c; font-size: 1.5rem;">Détails de la Commande</h2>
+                <button type="button" class="btn-secondary" id="closeOrderDetailBtn"
+                    style="padding: 8px; border-radius: 50%; min-width: 40px; height: 40px;">
+                    <span class="material-symbols-rounded">close</span>
+                </button>
+            </div>
+
+            <div id="orderDetailContent">
+                <!-- Content injected via JS -->
+                <div class="loading-state">Chargement des détails...</div>
+            </div>
+
+            <div class="form-actions" style="margin-top: 24px; border-top: 1px solid #e2e8f0; padding-top: 16px;">
+                <button type="button" class="btn-primary" id="printOrderBtn"
+                    style="display: flex; align-items: center; gap: 8px; padding: 10px 20px;">
+                    <span class="material-symbols-rounded">print</span> Imprimer
+                </button>
+            </div>
         </div>
     </div>
 
