@@ -397,10 +397,18 @@
                 </button>
             </div>
 
-            <div class="category-tabs">
-                <div class="category-tab active" data-category="all">Tous</div>
-                <div class="category-tab" data-category="Pharmacie">Pharmacie</div>
-                <div class="category-tab" data-category="Parapharmacie">Parapharmacie</div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 15px;">
+                <div class="category-tabs" style="margin-bottom: 0; border-bottom: none;">
+                    <div class="category-tab active" data-category="all">Tous</div>
+                    <div class="category-tab" data-category="Pharmacie">Pharmacie</div>
+                    <div class="category-tab" data-category="Parapharmacie">Parapharmacie</div>
+                </div>
+                
+                <div class="search-container" style="position: relative; min-width: 280px;">
+                    <span class="material-symbols-rounded" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #a0aec0; font-size: 20px;">search</span>
+                    <input type="text" id="productSearchInput" placeholder="Rechercher un produit par nom..." 
+                        style="width: 100%; padding: 10px 12px 10px 40px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; outline: none; transition: border-color 0.2s;">
+                </div>
             </div>
 
             <div class="data-table-container">
@@ -646,6 +654,28 @@
                     style="display: flex; align-items: center; gap: 8px; padding: 10px 20px;">
                     <span class="material-symbols-rounded">print</span> Imprimer
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Detail Modal -->
+    <div class="modal-overlay" id="messageDetailModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <h2 style="margin:0; color:#1a202c; font-size: 1.5rem;">Détails du Message</h2>
+                <button type="button" class="btn-secondary" id="closeMessageDetailBtn"
+                    style="padding: 8px; border-radius: 50%; min-width: 40px; height: 40px;">
+                    <span class="material-symbols-rounded">close</span>
+                </button>
+            </div>
+
+            <div id="messageDetailContent">
+                <div class="loading-state">Chargement...</div>
+            </div>
+
+            <div class="form-actions" style="margin-top: 24px; border-top: 1px solid #e2e8f0; padding-top: 16px;">
+                <button type="button" class="btn-secondary" onclick="document.getElementById('messageDetailModal').classList.remove('active')">Fermer</button>
+                <a id="replyEmailBtn" href="#" class="btn-primary" style="text-decoration: none; padding: 10px 20px;">Répondre par Email</a>
             </div>
         </div>
     </div>

@@ -96,13 +96,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     let isEditing = false;
 
     // Load Products
-    async function loadProducts(category = 'all') {
+    async function loadProducts(category = 'all', searchTerm = '') {
         productsTableBody.innerHTML = '<tr><td colspan="6" class="loading-state">Chargement...</td></tr>';
         
         let query = supabaseClient.from('products').select('*').order('id', { ascending: false });
         
         if (category !== 'all') {
             query = query.eq('category', category);
+        }
+
+        if (searchTerm.trim()) {
+            query = query.ilike('name', `%${searchTerm.trim()}%`);
         }
 
         const { data, error } = await query;
@@ -113,7 +117,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         if (data.length === 0) {
-            productsTableBody.innerHTML = '<tr><td colspan="6" class="loading-state">Aucun produit dans cette catégorie</td></tr>';
+            productsTableBody.innerHTML = '<tr><td colspan="6" class="loading-state">Aucun produit trouvé</td></tr>';
             return;
         }
 
@@ -142,6 +146,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         `).join('');
     }
 
+    // Product Search Logic
+    const productSearchInput = document.getElementById('productSearchInput');
+    if (productSearchInput) {
+        let searchTimeout;
+        productSearchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const activeCategory = document.querySelector('.category-tab.active')?.getAttribute('data-category') || 'all';
+                loadProducts(activeCategory, e.target.value);
+            }, 300); // Debounce search
+        });
+    }
+
     // Category Tabs Logic
     const categoryTabs = document.querySelectorAll('.category-tab');
     categoryTabs.forEach(tab => {
@@ -149,7 +166,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             categoryTabs.forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
             const category = tab.getAttribute('data-category');
-            loadProducts(category);
+            const searchTerm = productSearchInput ? productSearchInput.value : '';
+            loadProducts(category, searchTerm);
         });
     });
 
@@ -261,11 +279,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td><a href="mailto:${m.email}" style="color:var(--primary-color)">${m.email}</a></td>
                 <td>${m.phone || '-'}</td>
                 <td>
-                    <div style="font-weight:600; font-size:0.9rem">${m.subject || 'Sans sujet'}</div>
-                    <div style="font-size:0.85rem; color:#4a5568; margin-top:4px">${m.message}</div>
+                    <div style="font-weight:600; font-size:0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;">${m.subject || 'Sans sujet'}</div>
                 </td>
                 <td>
                     <div class="action-btns">
+                        <button class="action-btn" onclick="viewMessage(${m.id})" title="Voir détails">
+                            <span class="material-symbols-rounded" style="font-size:18px">visibility</span>
+                        </button>
                         <button class="action-btn delete" onclick="deleteMessage(${m.id})" title="Supprimer">
                             <span class="material-symbols-rounded" style="font-size:18px">delete</span>
                         </button>
@@ -273,6 +293,65 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </td>
             </tr>
         `}).join('');
+    }
+
+    // View Message Details
+    window.viewMessage = async (id) => {
+        const messageDetailModal = document.getElementById('messageDetailModal');
+        const detailContent = document.getElementById('messageDetailContent');
+        const replyBtn = document.getElementById('replyEmailBtn');
+        
+        messageDetailModal.classList.add('active');
+        detailContent.innerHTML = '<div class="loading-state">Chargement...</div>';
+
+        const { data: m, error } = await supabaseClient
+            .from('contact_messages')
+            .select('*')
+            .eq('id', id)
+            .single();
+
+        if (error || !m) {
+            detailContent.innerHTML = '<div class="loading-state">Erreur lors du chargement.</div>';
+            return;
+        }
+
+        const dateStr = new Date(m.created_at).toLocaleString('fr-FR');
+        replyBtn.href = `mailto:${m.email}?subject=RE: ${m.subject || 'Votre message'}`;
+
+        detailContent.innerHTML = `
+            <div style="margin-bottom: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <h4 style="margin: 0 0 5px 0; color: #718096; font-size: 0.75rem; text-transform: uppercase;">Expéditeur</h4>
+                        <p style="margin: 0; font-weight: 600;">${m.name}</p>
+                        <p style="margin: 0; font-size: 0.9rem; color: var(--primary-color);">${m.email}</p>
+                        ${m.phone ? `<p style="margin: 0; font-size: 0.85rem;">Tel: ${m.phone}</p>` : ''}
+                    </div>
+                    <div>
+                        <h4 style="margin: 0 0 5px 0; color: #718096; font-size: 0.75rem; text-transform: uppercase;">Réception</h4>
+                        <p style="margin: 0; font-size: 0.9rem;">Date: ${dateStr}</p>
+                        <p style="margin: 0; font-size: 0.9rem;">ID: #${m.id}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <h4 style="margin: 0 0 8px 0; color: #718096; font-size: 0.75rem; text-transform: uppercase;">Objet</h4>
+                <p style="margin: 0; font-weight: 600; color: #2d3748; font-size: 1.1rem;">${m.subject || 'Sans sujet'}</p>
+            </div>
+
+            <div style="background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; line-height: 1.6; color: #4a5568;">
+                ${m.message.replace(/\n/g, '<br>')}
+            </div>
+        `;
+    };
+
+    // Close Message Detail Modal
+    const closeMessageDetailBtn = document.getElementById('closeMessageDetailBtn');
+    if (closeMessageDetailBtn) {
+        closeMessageDetailBtn.addEventListener('click', () => {
+            document.getElementById('messageDetailModal').classList.remove('active');
+        });
     }
 
     // Delete Message
