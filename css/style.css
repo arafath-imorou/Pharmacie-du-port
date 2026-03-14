@@ -4329,15 +4329,6 @@ footer {
     font-weight: 700;
 }
 
-.pharmacy-card p {
-    margin: 0;
-    color: var(--text-light);
-    font-size: 0.95rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
 .product-item h4 {
     color: var(--text-dark);
     margin: 0.75rem 0 0.4rem 0;
@@ -4354,6 +4345,14 @@ footer {
     width: 100%;
 }
 
+.pharmacy-card p {
+    margin: 0;
+    color: var(--text-light);
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
 
 .pharmacy-card .material-symbols-rounded {
     font-size: 1.1rem;
