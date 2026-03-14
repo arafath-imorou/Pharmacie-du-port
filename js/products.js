@@ -97,6 +97,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const searchResultsContainer = document.getElementById('search-results-list');
     const searchTermDisplay = document.getElementById('search-term');
     const searchCountDisplay = document.getElementById('search-count');
+    const suggestionsContainer = document.getElementById('search-suggestions');
 
     // Only run if elements exist on page
     if (!searchInput || !searchBtn || !searchModal) return;
@@ -182,10 +183,71 @@ document.addEventListener('DOMContentLoaded', async () => {
         // 4. Show Modal
         searchModal.classList.add('active');
         document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        if (suggestionsContainer) suggestionsContainer.classList.remove('active');
+    };
+
+    // Helper to render suggestions
+    const renderSuggestions = (query) => {
+        if (!suggestionsContainer) return;
+
+        if (query.length < 2) {
+            suggestionsContainer.classList.remove('active');
+            suggestionsContainer.innerHTML = '';
+            return;
+        }
+
+        const matches = productsDb.filter(p => {
+            const name = p.name.toLowerCase();
+            return name.startsWith(query) || name.includes(query);
+        })
+        .sort((a, b) => {
+            const aStarts = a.name.toLowerCase().startsWith(query);
+            const bStarts = b.name.toLowerCase().startsWith(query);
+            if (aStarts && !bStarts) return -1;
+            if (!aStarts && bStarts) return 1;
+            return a.name.localeCompare(b.name);
+        })
+        .slice(0, 10);
+
+        if (matches.length === 0) {
+            suggestionsContainer.classList.remove('active');
+            return;
+        }
+
+        suggestionsContainer.innerHTML = matches.map(p => `
+            <div class="suggestion-item" data-product-name="${p.name.replace(/"/g, '&quot;')}">
+                <span class="suggestion-name">${p.name}</span>
+                <span class="suggestion-category">${p.category}</span>
+            </div>
+        `).join('');
+
+        suggestionsContainer.classList.add('active');
     };
 
     // Listeners
     searchBtn.addEventListener('click', executeSearch);
+
+    searchInput.addEventListener('input', (e) => {
+        renderSuggestions(e.target.value.trim().toLowerCase());
+    });
+
+    if (suggestionsContainer) {
+        suggestionsContainer.addEventListener('click', (e) => {
+            const item = e.target.closest('.suggestion-item');
+            if (item) {
+                searchInput.value = item.dataset.productName;
+                suggestionsContainer.classList.remove('active');
+                executeSearch();
+            }
+        });
+
+        // Close suggestions when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!suggestionsContainer.contains(e.target) && e.target !== searchInput) {
+                suggestionsContainer.classList.remove('active');
+            }
+        });
+    }
 
     searchInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {

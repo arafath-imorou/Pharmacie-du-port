@@ -2174,6 +2174,62 @@ footer {
     padding: 0.75rem 1.5rem;
 }
 
+/* Search Suggestions Dropdown */
+.hero-search {
+    position: relative; /* Ensure container can position absolute children */
+}
+
+.search-suggestions-container {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    width: 100%;
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    z-index: 1001;
+    max-height: 400px;
+    overflow-y: auto;
+    display: none; /* Hidden by default */
+    padding: 0.5rem 0;
+}
+
+.search-suggestions-container.active {
+    display: block;
+}
+
+.suggestion-item {
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-item:hover {
+    background: var(--bg-light);
+}
+
+.suggestion-name {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+}
+
+.suggestion-category {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    background: var(--secondary-color);
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
 /* Removed old floating-on-call in favor of card-on-call */
 
 /* Bento Grid */
