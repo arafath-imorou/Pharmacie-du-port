@@ -239,16 +239,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ----------------------------------------------------
     const messagesTableBody = document.getElementById('messagesTableBody');
     async function loadMessages() {
-        messagesTableBody.innerHTML = '<tr><td colspan="5" class="loading-state">Chargement...</td></tr>';
+        messagesTableBody.innerHTML = '<tr><td colspan="6" class="loading-state">Chargement...</td></tr>';
         const { data, error } = await supabaseClient.from('contact_messages').select('*').order('created_at', { ascending: false });
 
         if (error) {
-            messagesTableBody.innerHTML = '<tr><td colspan="5" class="loading-state">Erreur de chargement</td></tr>';
+            messagesTableBody.innerHTML = '<tr><td colspan="6" class="loading-state">Erreur de chargement</td></tr>';
             return;
         }
 
         if (data.length === 0) {
-            messagesTableBody.innerHTML = '<tr><td colspan="5" class="loading-state">Aucun message pour le moment.</td></tr>';
+            messagesTableBody.innerHTML = '<tr><td colspan="6" class="loading-state">Aucun message pour le moment.</td></tr>';
             return;
         }
 
@@ -264,9 +264,26 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <div style="font-weight:600; font-size:0.9rem">${m.subject || 'Sans sujet'}</div>
                     <div style="font-size:0.85rem; color:#4a5568; margin-top:4px">${m.message}</div>
                 </td>
+                <td>
+                    <div class="action-btns">
+                        <button class="action-btn delete" onclick="deleteMessage(${m.id})" title="Supprimer">
+                            <span class="material-symbols-rounded" style="font-size:18px">delete</span>
+                        </button>
+                    </div>
+                </td>
             </tr>
         `}).join('');
     }
+
+    // Delete Message
+    window.deleteMessage = async (id) => {
+        if (!confirm("Voulez-vous vraiment supprimer ce message ?")) return;
+
+        const { error } = await supabaseClient.from('contact_messages').delete().eq('id', id);
+        if (error) return alert("Erreur lors de la suppression du message.");
+
+        await loadMessages();
+    };
 
     // ----------------------------------------------------
     // ORDERS LOGIC
@@ -284,7 +301,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         if (data.length === 0) {
-            ordersTableBody.innerHTML = '<tr><td colspan="6" class="loading-state">Aucune commande sauvegardée.</td></tr>';
+            ordersTableBody.innerHTML = '<tr><td colspan="5" class="loading-state">Aucune commande sauvegardée.</td></tr>';
             return;
         }
 
@@ -305,11 +322,26 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <button class="action-btn" onclick="viewOrder(${o.id})" title="Voir détails">
                             <span class="material-symbols-rounded" style="font-size:20px">visibility</span>
                         </button>
+                        <button class="action-btn delete" onclick="deleteOrder(${o.id})" title="Supprimer">
+                            <span class="material-symbols-rounded" style="font-size:20px">delete</span>
+                        </button>
                     </div>
                 </td>
             </tr>
         `}).join('');
     }
+
+    // Delete Order
+    window.deleteOrder = async (id) => {
+        if (!confirm("Voulez-vous vraiment supprimer cette commande ? Cette action supprimera également les articles liés.")) return;
+
+        // Note: Due to foreign key constraints, usually ON DELETE CASCADE should handle items.
+        // If not, we'd need to delete items first.
+        const { error } = await supabaseClient.from('orders').delete().eq('id', id);
+        if (error) return alert("Erreur lors de la suppression de la commande.");
+
+        await loadOrders();
+    };
 
     // View Order Details
     window.viewOrder = async (id) => {
