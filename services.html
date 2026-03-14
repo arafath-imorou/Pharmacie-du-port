@@ -276,6 +276,24 @@
                     <div style="background: white; padding: 1.5rem; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); text-align: center; font-weight: 600; color: var(--primary-color); border: 1px solid var(--border-color);">GAB (GENERALE DES ASSURANCES DU BENIN)</div>
                     <div style="background: white; padding: 1.5rem; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); text-align: center; font-weight: 600; color: var(--primary-color); border: 1px solid var(--border-color);">SANLAM ASSURANCE BENIN (Ex SAHAM)</div>
                 </div>
+                </div>
+            </div>
+
+            <!-- Product Search Section -->
+            <div id="liste-produits" style="margin-top: 4rem; padding-top: 4rem; border-top: 1px solid var(--border-color);">
+                <div class="section-title">
+                    <h2>LISTE DE NOS PRODUITS</h2>
+                </div>
+                <p class="lead-text" style="text-align: center; margin-bottom: 2rem; max-width: 800px; margin-left: auto; margin-right: auto;">
+                    Utilisez notre outil de recherche pour consulter la disponibilité de nos médicaments et produits de parapharmacie.
+                </p>
+                
+                <div class="hero-search" style="margin: 0 auto 3rem; background: white; border: 1px solid var(--border-color); position: relative;">
+                    <span class="material-symbols-rounded" style="color: var(--text-light); margin-left: 0.5rem;">search</span>
+                    <input type="text" id="hero-search-input" placeholder="Rechercher un médicament ou parapharmacie..." autocomplete="off">
+                    <button class="btn btn-primary" id="hero-search-btn" style="margin: 0;">Chercher</button>
+                    <div id="search-suggestions" class="search-suggestions-container"></div>
+                </div>
             </div>
 
             <div style="margin-top: 4rem;">
@@ -364,7 +382,28 @@
     <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <script src="js/supabaseClient.js" defer></script>
+    <script src="js/contentLoader.js" defer></script>
+    <script src="js/products.js" defer></script>
     <script src="js/main.js" defer></script>
+
+    <!-- Search Results Modal -->
+    <div id="search-modal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-modal-header">
+                <h3>Résultats de la recherche</h3>
+                <button id="search-close" class="btn-close" aria-label="Fermer la recherche">
+                    <span class="material-symbols-rounded">close</span>
+                </button>
+            </div>
+            <div class="search-summary">
+                <p>Mots-clés : <strong id="search-term"></strong></p>
+                <p id="search-count" style="color: var(--text-light);"></p>
+            </div>
+            <div id="search-results-list" class="search-results-grid">
+                <!-- Search results will be injected here via JavaScript -->
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
