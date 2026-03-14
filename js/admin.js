@@ -95,11 +95,24 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let isEditing = false;
 
+    // Pagination State
+    let currentProdPage = 1;
+    let prodItemsPerPage = 50;
+    let totalProdCount = 0;
+
     // Load Products
-    async function loadProducts(category = 'all', searchTerm = '') {
+    async function loadProducts(category = 'all', searchTerm = '', page = 1) {
+        currentProdPage = page;
         productsTableBody.innerHTML = '<tr><td colspan="6" class="loading-state">Chargement...</td></tr>';
         
-        let query = supabaseClient.from('products').select('*').order('id', { ascending: false });
+        const from = (page - 1) * prodItemsPerPage;
+        const to = from + prodItemsPerPage - 1;
+
+        let query = supabaseClient
+            .from('products')
+            .select('*', { count: 'exact' })
+            .order('id', { ascending: false })
+            .range(from, to);
         
         if (category !== 'all') {
             query = query.eq('category', category);
@@ -109,12 +122,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             query = query.ilike('name', `%${searchTerm.trim()}%`);
         }
 
-        const { data, error } = await query;
+        const { data, error, count } = await query;
 
         if (error) {
             productsTableBody.innerHTML = '<tr><td colspan="6" class="loading-state">Erreur de chargement</td></tr>';
             return;
         }
+
+        totalProdCount = count || 0;
+        updateProdPaginationUI();
 
         if (data.length === 0) {
             productsTableBody.innerHTML = '<tr><td colspan="6" class="loading-state">Aucun produit trouvé</td></tr>';
@@ -146,6 +162,34 @@ document.addEventListener('DOMContentLoaded', async () => {
         `).join('');
     }
 
+    function updateProdPaginationUI() {
+        const rangeStart = totalProdCount === 0 ? 0 : (currentProdPage - 1) * prodItemsPerPage + 1;
+        const rangeEnd = Math.min(currentProdPage * prodItemsPerPage, totalProdCount);
+        
+        document.getElementById('prodRangeStart').textContent = rangeStart;
+        document.getElementById('prodRangeEnd').textContent = rangeEnd;
+        document.getElementById('prodTotalCount').textContent = totalProdCount;
+        document.getElementById('prodPageInfo').textContent = `Page ${currentProdPage}`;
+
+        document.getElementById('prevProdPage').disabled = currentProdPage === 1;
+        document.getElementById('nextProdPage').disabled = rangeEnd >= totalProdCount;
+    }
+
+    // Pagination Listeners
+    document.getElementById('prevProdPage').addEventListener('click', () => {
+        if (currentProdPage > 1) {
+            const activeCategory = document.querySelector('.category-tab.active')?.getAttribute('data-category') || 'all';
+            const searchTerm = productSearchInput ? productSearchInput.value : '';
+            loadProducts(activeCategory, searchTerm, currentProdPage - 1);
+        }
+    });
+
+    document.getElementById('nextProdPage').addEventListener('click', () => {
+        const activeCategory = document.querySelector('.category-tab.active')?.getAttribute('data-category') || 'all';
+        const searchTerm = productSearchInput ? productSearchInput.value : '';
+        loadProducts(activeCategory, searchTerm, currentProdPage + 1);
+    });
+
     // Product Search Logic
     const productSearchInput = document.getElementById('productSearchInput');
     if (productSearchInput) {
@@ -154,7 +198,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(() => {
                 const activeCategory = document.querySelector('.category-tab.active')?.getAttribute('data-category') || 'all';
-                loadProducts(activeCategory, e.target.value);
+                loadProducts(activeCategory, e.target.value, 1); // Reset to page 1 on search
             }, 300); // Debounce search
         });
     }
@@ -167,7 +211,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             tab.classList.add('active');
             const category = tab.getAttribute('data-category');
             const searchTerm = productSearchInput ? productSearchInput.value : '';
-            loadProducts(category, searchTerm);
+            loadProducts(category, searchTerm, 1); // Reset to page 1 on filter
         });
     });
 

@@ -430,6 +430,22 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Products Pagination -->
+            <div id="productsPagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <div style="font-size: 0.9rem; color: #718096;">
+                    Affichage de <span id="prodRangeStart">0</span> - <span id="prodRangeEnd">0</span> sur <span id="prodTotalCount">0</span> produits
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button id="prevProdPage" class="btn-secondary" style="padding: 6px 12px; font-size: 0.85rem; display: flex; align-items: center; gap: 5px;" disabled>
+                        <span class="material-symbols-rounded" style="font-size: 18px;">chevron_left</span> Précédent
+                    </button>
+                    <span id="prodPageInfo" style="font-weight: 600; font-size: 0.9rem; color: #2d3748;">Page 1</span>
+                    <button id="nextProdPage" class="btn-secondary" style="padding: 6px 12px; font-size: 0.85rem; display: flex; align-items: center; gap: 5px;">
+                        Suivant <span class="material-symbols-rounded" style="font-size: 18px;">chevron_right</span>
+                    </button>
+                </div>
+            </div>
         </section>
 
         <!-- BLOG PANEL -->
