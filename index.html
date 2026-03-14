@@ -221,6 +221,37 @@
         </div>
     </div>
 
+    <!-- Pharmacies de Garde Section (Visible when not on call) -->
+    <section id="pharmacies-garde-section" class="pharmacies-garde-section" style="display: none; padding: 4rem 0;">
+        <div class="container">
+            <div class="section-title text-center">
+                <span>Services de Proximité</span>
+                <h2>Pharmacies de garde</h2>
+            </div>
+            <p class="lead-text text-center" style="max-width: 800px; margin: 0 auto 3rem auto;">
+                Lorsque notre pharmacie n’est pas de garde, vous pouvez vous orienter vers l’une des pharmacies de garde de votre zone afin de bénéficier d’une prise en charge pharmaceutique à tout moment.
+            </p>
+
+            <div class="filter-container" style="text-align: center; margin-bottom: 3rem;">
+                <label for="zone-filter" style="font-weight: 600; margin-right: 1rem; color: var(--secondary-color);">Filtrer par zone :</label>
+                <select id="zone-filter" class="zone-select" style="padding: 10px 20px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 1rem; color: var(--text-dark); background: white; cursor: pointer; outline: none; transition: border-color 0.3s;">
+                    <option value="st-michel">St-Michel / Missèbo / Ganhi</option>
+                    <option value="akpakpa">Akpakpa</option>
+                    <option value="zogbo">Zogbo / Fifadji / Vêdoko</option>
+                    <option value="gbegamey">Gbégamey / Zongo</option>
+                    <option value="sikecodji">Marché St-Michel / Sikècodji</option>
+                    <option value="gbedjromede">Gbèdjromèdé / Aidjèdo</option>
+                    <option value="cadjehoun">Cadjèhoun / Vodjè</option>
+                    <option value="agla">Agla / Fidjrossè / Akpakomè</option>
+                </select>
+            </div>
+
+            <div id="pharmacies-list" class="pharmacies-grid">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </section>
+
     <!-- Nouveaux Produits - Infinite Scroll -->
     <section class="new-products-section" style="padding-top: 4rem;">
         <div class="container">

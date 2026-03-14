@@ -122,6 +122,112 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(waButton);
     };
 
+    // Pharmacies de Garde Logic
+    const initPharmaciesGarde = () => {
+        const section = document.getElementById('pharmacies-garde-section');
+        const listContainer = document.getElementById('pharmacies-list');
+        const zoneFilter = document.getElementById('zone-filter');
+
+        if (!section || !listContainer || !zoneFilter) return;
+
+        const pharmaciesByZone = {
+            'st-michel': [
+                { name: 'Pharmacie Atinkanmey', phones: ['94 01 23 92', '60 01 97 72'] },
+                { name: 'Pharmacie Ganhi', phones: ['95 94 36 82', '60 80 50 39'] },
+                { name: 'Pharmacie Principale', phones: ['21 31 32 15'] },
+                { name: 'Pharmacie Vie et Santé', phones: ['21 31 19 85', '95 64 75 31'] }
+            ],
+            'akpakpa': [
+                { name: 'Pharmacie Agbodjèdo', phones: [] },
+                { name: 'Pharmacie Bien-Être', phones: [] },
+                { name: 'Pharmacie Bolarin', phones: [] },
+                { name: 'Pharmacie Ciné Concorde', phones: [] },
+                { name: 'Pharmacie de l’Aigle Royal', phones: [] },
+                { name: 'Pharmacie Gratias Minontchou', phones: [] },
+                { name: 'Nouvelle Pharmacie de l’Habitat', phones: [] },
+                { name: 'Pharmacie Jak Aledjo', phones: [] },
+                { name: 'Pharmacie Le Remède Sodjeatinme', phones: [] },
+                { name: 'Pharmacie Midombo', phones: [] },
+                { name: 'Pharmacie Reine des Grâces', phones: [] },
+                { name: 'Pharmacie Sacré-Cœur', phones: [] },
+                { name: 'Pharmacie Saint Urbain', phones: [] },
+                { name: 'Pharmacie Saint Martin', phones: [] },
+                { name: 'Pharmacie Suru-Léré', phones: [] },
+                { name: 'Pharmacie Tianto', phones: [] },
+                { name: 'Pharmacie Yenawa', phones: [] }
+            ],
+            'zogbo': [
+                { name: 'Pharmacie de l’Amitié', phones: [] },
+                { name: 'Pharmacie Kindonou', phones: [] },
+                { name: 'Pharmacie Palace Plus', phones: [] },
+                { name: 'Pharmacie Saint Gabriel', phones: [] },
+                { name: 'Pharmacie Sainte Famille', phones: [] },
+                { name: 'Pharmacie Sainte Madeleine de Zogbohouè', phones: [] },
+                { name: 'Pharmacie Vêdoko', phones: [] },
+                { name: 'Pharmacie Vie Nouvelle', phones: [] },
+                { name: 'Pharmacie Zogbo', phones: [] }
+            ],
+            'gbegamey': [
+                { name: 'Pharmacie Camp Guézo', phones: [] },
+                { name: 'Pharmacie de la Paix', phones: [] },
+                { name: 'Pharmacie de la Mosquée Centrale', phones: [] },
+                { name: 'Pharmacie Gbégamey ex CCB', phones: [] },
+                { name: 'Pharmacie Saint Jean', phones: [] }
+            ],
+            'sikecodji': [
+                { name: 'Pharmacie du Marché Saint Michel', phones: [] },
+                { name: 'Pharmacie Marina', phones: [] },
+                { name: 'Pharmacie des 4 Thérapies', phones: [] },
+                { name: 'Pharmacie Forum Santé CSP', phones: [] },
+                { name: 'Pharmacie Okpè Oluwa', phones: [] },
+                { name: 'Pharmacie Sainte Rita', phones: [] }
+            ],
+            'gbedjromede': [
+                { name: 'Pharmacie de l’Espérance', phones: [] },
+                { name: 'Pharmacie Femi', phones: [] },
+                { name: 'Pharmacie Gbèdjromèdé', phones: [] },
+                { name: 'Pharmacie Le Nokoué', phones: [] }
+            ],
+            'cadjehoun': [
+                { name: 'Pharmacie de la Haie Vive', phones: [] },
+                { name: 'Pharmacie de l’Étoile', phones: [] },
+                { name: 'Nouvelle Pharmacie Houeyiho', phones: [] },
+                { name: 'Pharmacie Sainte Philomène', phones: [] }
+            ],
+            'agla': [
+                { name: 'Pharmacie Don de Dieu', phones: [] },
+                { name: 'Pharmacie La Madone', phones: [] },
+                { name: 'Pharmacie Salem-Hlazounto', phones: [] },
+                { name: 'Pharmacie Les Archanges', phones: [] },
+                { name: 'Pharmacie Les Pylônes', phones: [] }
+            ]
+        };
+
+        const renderPharmacies = (zone) => {
+            const list = pharmaciesByZone[zone] || [];
+            listContainer.innerHTML = list.map(p => `
+                <div class="pharmacy-card">
+                    <h4>${p.name}</h4>
+                    <p>
+                        <span class="material-symbols-rounded">call</span>
+                        ${p.phones.length > 0 ? p.phones.join(' / ') : 'Numéro non disponible'}
+                    </p>
+                </div>
+            `).join('');
+        };
+
+        zoneFilter.addEventListener('change', (e) => {
+            renderPharmacies(e.target.value);
+        });
+
+        // Initialize with default zone
+        renderPharmacies('st-michel');
+        
+        return section; // Return for visibility control
+    };
+
+    const pharmacieGardeSection = initPharmaciesGarde();
+
     // On-Call Countdown Logic (Automated 1 week on / 1 week off cycle)
     const initOnCallCountdown = () => {
         const statusBadge = document.getElementById('on-call-status-badge');
@@ -145,6 +251,11 @@ document.addEventListener('DOMContentLoaded', () => {
             // Calculate how many weeks passed since reference
             const weeksPassed = Math.floor(timeDiff / oneWeekMs);
             const isOnCallWeek = weeksPassed % 2 === 0;
+
+            // Visibility control for pharmacies de garde section
+            if (pharmacieGardeSection) {
+                pharmacieGardeSection.style.display = isOnCallWeek ? 'none' : 'block';
+            }
 
             // Calculate start and end of the current 1-week block
             const currentPeriodStart = referenceDate + (weeksPassed * oneWeekMs);
