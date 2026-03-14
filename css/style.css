@@ -1001,9 +1001,9 @@ section.bg-light {
     background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
     border: 1px solid #dcfce7;
     border-radius: 2rem;
-    padding: 3.5rem 2rem;
-    margin-top: 4rem;
-    margin-bottom: 2rem;
+    padding: 2rem 1.5rem 1.5rem; /* Reduced padding from 3.5rem 2rem */
+    margin-top: 3rem; /* Reduced margin from 4rem */
+    margin-bottom: 1.5rem; /* Reduced margin from 2rem */
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
     display: flex;
     flex-direction: column;
@@ -1016,14 +1016,14 @@ section.bg-light {
 .on-call-badge-status {
     background: #fee2e2;
     color: #ef4444;
-    padding: 0.5rem 1.25rem;
-    border-radius: 2rem;
-    font-weight: 700;
-    font-size: 0.85rem;
+    padding: 0.85rem 2rem; /* Increased from 0.5rem 1.25rem */
+    border-radius: 2.5rem;
+    font-weight: 800; /* Increased weight */
+    font-size: 1.1rem; /* Increased from 0.85rem */
     display: inline-flex;
     align-items: center;
     gap: 0.75rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem; /* Reduced from 2rem */
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -1092,7 +1092,7 @@ section.bg-light {
 }
 
 .on-call-body {
-    margin: 3rem 0;
+    margin: 1.5rem 0; /* Reduced from 3rem 0 */
     width: 100%;
 }
 
@@ -1182,8 +1182,8 @@ section.bg-light {
 .on-call-footer {
     width: 100%;
     border-top: 1px solid #f1f5f9;
-    padding-top: 2rem;
-    margin-top: 1rem;
+    padding-top: 1.5rem; /* Reduced from 2rem */
+    margin-top: 0.5rem; /* Reduced from 1rem */
 }
 
 .emergency-contact-wrapper {
