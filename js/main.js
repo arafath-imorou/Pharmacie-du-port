@@ -208,10 +208,12 @@ document.addEventListener('DOMContentLoaded', () => {
             listContainer.innerHTML = list.map(p => `
                 <div class="pharmacy-card">
                     <h4>${p.name}</h4>
+                    ${p.phones.length > 0 ? `
                     <p>
                         <span class="material-symbols-rounded">call</span>
-                        ${p.phones.length > 0 ? p.phones.join(' / ') : 'Numéro non disponible'}
+                        ${p.phones.map(num => '01 ' + num).join(' / ')}
                     </p>
+                    ` : ''}
                 </div>
             `).join('');
         };
