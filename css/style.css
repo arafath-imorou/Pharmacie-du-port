@@ -628,6 +628,201 @@ section.bg-light {
     background-color: rgba(30, 142, 62, 0.1);
     color: var(--primary-color);
     border-radius: var(--radius-pill);
+    color: var(--text-light);
+    letter-spacing: 1px;
+}
+
+.phone-number {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.logo-container .logo-v3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-direction: row;
+}
+
+.logo-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-img {
+    height: 85px;
+    /* Taille augmentée pour une visibilité maximale */
+    width: auto;
+    object-fit: contain;
+    transition: var(--transition);
+}
+
+.logo-v3:hover .logo-img {
+    transform: scale(1.05);
+}
+
+.logo-text-wrapper {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.logo-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    line-height: 1.1;
+}
+
+.logo-subtitle {
+    font-size: 1.25rem;
+    font-family: 'Georgia', serif;
+    color: #FF9800;
+    font-style: italic;
+    line-height: 1.1;
+}
+
+.action-icons {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.icon-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    transition: var(--transition);
+}
+
+.icon-btn:hover {
+    background-color: var(--primary-color);
+    color: var(--white);
+}
+
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-size: 2.5rem;
+    cursor: pointer;
+    position: relative;
+    z-index: 2001;
+    /* Above the fixed nav */
+    padding: 0.75rem;
+    min-width: 48px;
+    min-height: 48px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+/* Tier 3: Main Navigation */
+.main-header-v3 {
+    background-color: var(--primary-color);
+    position: relative;
+}
+
+.nav-v3 {
+    display: flex;
+    justify-content: center;
+}
+
+.nav-v3 ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-v3 a {
+    text-decoration: none;
+    color: var(--white);
+    font-weight: 500;
+    padding: 1rem 0.5rem;
+    display: inline-block;
+    transition: var(--transition);
+    position: relative;
+}
+
+.nav-v3 a::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--white);
+    transition: var(--transition);
+}
+
+.nav-v3 a:hover::after,
+.nav-v3 a.active::after {
+    width: 100%;
+}
+
+/* Hero Section */
+.hero {
+    padding-top: 260px;
+    /* Added more offset for the thick header */
+    padding-bottom: 10rem;
+    /* Increased breathing room at bottom */
+    min-height: 85vh;
+    /* Slightly taller hero */
+    background: url('../img/ACCUEIL.jpeg') center/cover no-repeat;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    filter: contrast(1.1) brightness(1.05);
+    image-rendering: -webkit-optimize-contrast;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+    /* Stronger dark overlay for readability */
+    z-index: 0;
+}
+
+.hero::after {
+    display: none;
+}
+
+.hero .container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.hero-content {
+    max-width: 800px;
+    text-align: center;
+    -webkit-animation: fadeInUp 1s ease-out;
+    animation: fadeInUp 1s ease-out;
+}
+
+.hero-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: rgba(30, 142, 62, 0.1);
+    color: var(--primary-color);
+    border-radius: var(--radius-pill);
     font-weight: 600;
     font-size: 0.875rem;
     margin-bottom: 1.5rem;
@@ -636,6 +831,7 @@ section.bg-light {
 .hero h1 {
     color: var(--text-dark);
     margin-bottom: 1.5rem;
+    font-size: clamp(2rem, 8vw, 4rem); /* Responsive font size */
 }
 
 .hero h1 span {
@@ -2170,6 +2366,8 @@ footer {
     max-width: 500px;
     margin: 2rem auto;
     /* Centered horizontally */
+    position: relative;
+    z-index: 10; /* Ensure it stays above other elements but below nav */
 }
 
 .hero-search input {
@@ -4240,13 +4438,25 @@ footer {
     }
 
     h1 {
-        font-size: 2.2rem !important;
+        font-size: clamp(1.8rem, 10vw, 2.5rem) !important;
     }
 
     .hero {
-        padding-top: 150px;
-        padding-bottom: 5rem;
+        padding-top: 180px; /* Increased to avoid fixed header overlap */
+        padding-bottom: 4rem;
         min-height: auto !important;
+    }
+
+    .page-banner {
+        padding-top: 180px !important;
+        min-height: auto !important;
+        padding-bottom: 4rem !important;
+    }
+
+    .hero-search {
+        margin: 1.5rem auto;
+        width: 100%;
+        max-width: 100%;
     }
 
     .section-title {
