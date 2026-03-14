@@ -1860,9 +1860,11 @@ footer {
     color: var(--secondary-color);
     margin: 0;
     font-size: 1.1rem;
-    /* --- Order Page Specific Styles --- */
+}
 
-    .order-container {
+/* --- Order Page Specific Styles --- */
+
+.order-container {
         max-width: 800px;
         margin: 0 auto 4rem;
     }
@@ -2142,7 +2144,6 @@ footer {
         padding: 0.5rem 1rem;
         min-width: 40px;
     }
-}
 
 /* --- Homepage V2 Innovations --- */
 
