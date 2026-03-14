@@ -4442,19 +4442,23 @@ footer {
     }
 
     .hero {
-        padding-top: 180px; /* Increased to avoid fixed header overlap */
-        padding-bottom: 4rem;
+        padding-top: 250px !important; /* Heavily increased to clear fixed header */
+        padding-bottom: 3rem !important;
         min-height: auto !important;
+    }
+
+    .hero h1 {
+        margin-bottom: 0.75rem !important;
     }
 
     .page-banner {
-        padding-top: 180px !important;
+        padding-top: 210px !important;
         min-height: auto !important;
-        padding-bottom: 4rem !important;
+        padding-bottom: 3rem !important;
     }
 
     .hero-search {
-        margin: 1.5rem auto;
+        margin: 0.5rem auto 1rem !important;
         width: 100%;
         max-width: 100%;
     }
@@ -4481,6 +4485,7 @@ footer {
 
     .hero-btns {
         flex-direction: column;
+        margin-top: 0.5rem !important;
     }
 
     .pharmacist-intro-image {
