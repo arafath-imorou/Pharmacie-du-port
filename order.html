@@ -109,8 +109,23 @@
     </div>
 
 
+    <!-- Page Header Banner -->
+    <section class="page-banner"
+        style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('img/ACCUEIL.jpeg');">
+        <div class="container" style="z-index: 2; position: relative;">
+            <div class="hero-content" style="margin: 0 auto; max-width: 800px; text-align: center;">
+                <h1 style="color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">
+                    Passer une <span style="color: var(--primary-color);">Commande</span>
+                </h1>
+                <p style="color: rgba(255,255,255,0.9); text-shadow: 0 1px 5px rgba(0,0,0,0.3);">
+                    Commandez vos produits en ligne en toute simplicité.
+                </p>
+            </div>
+        </div>
+    </section>
+
     <!-- Page Content -->
-    <section style="padding-top: 180px; padding-bottom: 80px;">
+    <section style="padding-bottom: 80px;">
         <div class="container">
             <div class="order-container">
 
@@ -133,56 +148,19 @@
                             </div>
                         </div>
 
-                        <!-- Type de Commande -->
+                        <!-- Détails de la Commande -->
                         <div class="form-section">
                             <h3 class="form-section-title"><span class="material-symbols-rounded">shopping_bag</span>
-                                Détails de la commande</h3>
+                                Votre Commande</h3>
 
-                            <div class="order-type-tabs">
-                                <div class="order-tab active" data-target="prescription-panel">
-                                    <span class="material-symbols-rounded">receipt_long</span>
-                                    <span>Ordonnance</span>
-                                </div>
-                                <div class="order-tab" data-target="list-panel">
-                                    <span class="material-symbols-rounded">list_alt</span>
-                                    <span>Liste de produits</span>
-                                </div>
-                            </div>
-
-                            <div class="tab-content" id="prescription-panel">
-                                <p class="help-text">Veuillez charger la photo de votre ordonnance. Nos pharmaciens
-                                    l'analyseront pour préparer votre commande.</p>
+                            <div class="panel-content" id="list-panel">
                                 <div class="form-group">
-                                    <label for="prescriptionFile">Charger mon ordonnance *</label>
-                                    <div class="file-upload-container">
-                                        <input type="file" id="prescriptionFile" accept="image/*" class="file-input">
-                                        <div class="file-upload-placeholder" id="uploadPlaceholder">
-                                            <span class="material-symbols-rounded">cloud_upload</span>
-                                            <p>Cliquez ou glissez une image ici</p>
-                                        </div>
-                                        <div id="prescriptionPreview" class="hidden">
-                                            <img src="" alt="Aperçu ordonnance" id="previewImg">
-                                            <button type="button" class="btn-remove-file" id="removeFile">
-                                                <span class="material-symbols-rounded">close</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="prescriptionNotes">Instructions supplémentaires</label>
-                                    <textarea id="prescriptionNotes" rows="3"
-                                        placeholder="Précisez ici si vous avez besoin de génériques, ou d'autres détails..."></textarea>
-                                </div>
-                            </div>
-
-                            <div class="tab-content hidden" id="list-panel">
-                                <div class="form-group">
-                                    <label for="productSearch">Choisir les produits dans la liste</label>
+                                    <label for="productSearch">Rechercher des produits</label>
                                     <div class="search-selection-wrapper">
                                         <input type="text" id="productSearch"
-                                            placeholder="Rechercher ou cliquez pour voir la liste..."
+                                            placeholder="Tapez le nom d'un produit..."
                                             autocomplete="off">
-                                        <span class="material-symbols-rounded dropdown-icon">expand_more</span>
+                                        <span class="material-symbols-rounded dropdown-icon">search</span>
                                         <div id="productSuggestions" class="suggestions-list hidden"></div>
                                     </div>
                                 </div>
@@ -213,28 +191,18 @@
                             <div class="grid grid-2">
                                 <div class="form-group">
                                     <label for="deliveryMethod">Mode de réception *</label>
-                                    <select id="deliveryMethod" required>
-                                        <option value="pickup">Retrait rapide en pharmacie (Gratuit)</option>
-                                    </select>
-                                </div>
-                                <div class="form-group" style="grid-column: 1 / -1;">
-                                    <label for="paymentMethod">Mode de paiement préféré *</label>
-                                    <p class="help-text" style="color: var(--primary-color); font-weight: 500; font-size: 0.9rem; margin-bottom: 0.5rem; margin-top: 0;">
-                                        (Le paiement se fait une fois en pharmacie après avoir réçu la confirmation de votre commande via Whatsapp)
-                                    </p>
-                                    <div class="payment-methods-list" style="margin-bottom: 1rem; padding: 10px; background: rgba(var(--primary-rgb), 0.05); border-radius: 8px; border-left: 4px solid var(--primary-color);">
-                                        <p style="margin: 0; font-size: 0.85rem; font-weight: 600; color: #e53935;">Moyens de paiement acceptés :</p>
-                                        <ul style="margin: 5px 0 0 0; padding-left: 20px; font-size: 0.85rem; color: var(--text-color); display: flex; flex-wrap: wrap; gap: 10px; list-style: none;">
-                                            <li><span style="color: var(--primary-color);">●</span> MTN MOMO PAY</li>
-                                            <li><span style="color: var(--primary-color);">●</span> MOOV MONEY</li>
-                                            <li><span style="color: var(--primary-color);">●</span> CELTIS CASH</li>
-                                            <li><span style="color: var(--primary-color);">●</span> Espèces</li>
-                                            <li><span style="color: var(--primary-color);">●</span> Carte bancaire</li>
+                                <div class="form-group" style="grid-column: span 1;">
+                                    <label>Mode de paiement</label>
+                                    <div class="payment-methods-list" style="margin-top: 0.5rem; padding: 12px; background: rgba(var(--primary-rgb), 0.05); border-radius: 8px; border-left: 4px solid var(--primary-color);">
+                                        <p style="margin: 0 0 8px 0; font-size: 0.85rem; font-weight: 700; color: var(--primary-color);">Paiement lors du retrait à la Pharmacie :</p>
+                                        <ul style="margin: 0; padding: 0; font-size: 0.85rem; color: var(--text-color); display: grid; grid-template-columns: 1fr 1fr; gap: 8px; list-style: none;">
+                                            <li style="display: flex; align-items: center; gap: 5px;"><span style="color: var(--primary-color); font-size: 1.2rem;">•</span> MTN MOMO PAY</li>
+                                            <li style="display: flex; align-items: center; gap: 5px;"><span style="color: var(--primary-color); font-size: 1.2rem;">•</span> MOOV MONEY</li>
+                                            <li style="display: flex; align-items: center; gap: 5px;"><span style="color: var(--primary-color); font-size: 1.2rem;">•</span> CELTIS CASH</li>
+                                            <li style="display: flex; align-items: center; gap: 5px;"><span style="color: var(--primary-color); font-size: 1.2rem;">•</span> Espèces</li>
+                                            <li style="display: flex; align-items: center; gap: 5px;"><span style="color: var(--primary-color); font-size: 1.2rem;">•</span> Carte bancaire</li>
                                         </ul>
                                     </div>
-                                    <select id="paymentMethod" required>
-                                        <option value="pickup" selected>Paiement lors du retrait à la Pharmacie</option>
-                                    </select>
                                 </div>
                             </div>
 
