@@ -268,14 +268,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isOnCallWeek) {
                 // Currently on call
                 statusBadge.classList.add('status-active');
-                statusText.innerText = "EN GARDE CETTE SEMAINE";
+                statusText.innerText = "DE GARDE CETTE SEMAINE";
                 countdownLabel.innerText = "Fin de la garde dans :";
                 statusBadge.style.background = "#dcfce7";
                 statusBadge.style.color = "#16a34a";
             } else {
                 // Not on call
                 statusBadge.classList.remove('status-active');
-                statusText.innerText = "PAS DE GARDE ACTUELLEMENT";
+                statusText.innerText = "PAS DE GARDE CETTE SEMAINE";
                 countdownLabel.innerText = "Prochaine garde dans :";
                 statusBadge.style.background = "#fee2e2";
                 statusBadge.style.color = "#ef4444";
