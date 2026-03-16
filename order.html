@@ -184,14 +184,19 @@
                             </div>
                         </div>
 
-                        <!-- Livraison & Paiement -->
+                        <!-- Retrait & Paiement -->
                         <div class="form-section">
                             <h3 class="form-section-title"><span class="material-symbols-rounded">local_shipping</span>
                                 Retrait et Paiement</h3>
                             <div class="grid grid-2">
                                 <div class="form-group">
-                                    <label for="deliveryMethod">Mode de réception *</label>
-                                <div class="form-group" style="grid-column: span 1;">
+                                    <label>Mode de réception *</label>
+                                    <div style="padding: 0.75rem 1rem; background: #f8f9fa; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 0.95rem; font-weight: 500;">
+                                        Retrait rapide en pharmacie (Gratuit)
+                                    </div>
+                                    <input type="hidden" id="deliveryMethod" value="pickup">
+                                </div>
+                                <div class="form-group">
                                     <label>Mode de paiement</label>
                                     <div class="payment-methods-list" style="margin-top: 0.5rem; padding: 12px; background: rgba(var(--primary-rgb), 0.05); border-radius: 8px; border-left: 4px solid var(--primary-color);">
                                         <p style="margin: 0 0 8px 0; font-size: 0.85rem; font-weight: 700; color: var(--primary-color);">Paiement lors du retrait à la Pharmacie :</p>
@@ -205,7 +210,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
 
                         <div class="form-submit">
