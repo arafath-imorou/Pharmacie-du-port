@@ -1,11 +1,68 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- Form State ---
-    let activeOrderType = 'list-panel'; // Default to product list
-    const productSearch = document.getElementById('productSearch');
-    const productSuggestions = document.getElementById('productSuggestions');
+    // --- Tabs Logic ---
+    const tabs = document.querySelectorAll('.order-tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const prescriptionInput = document.getElementById('prescriptionFile');
+    
+    // Track active tab robustly
+    let activeOrderType = 'prescription-panel'; // matches the default 'active' class in HTML
+    
+    // Initial setup for required attribute
+    if (prescriptionInput) prescriptionInput.required = true;
 
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tabContents.forEach(content => content.classList.add('hidden'));
 
+            tab.classList.add('active');
+            const targetId = tab.getAttribute('data-target');
+            document.getElementById(targetId).classList.remove('hidden');
+            activeOrderType = targetId;
+            console.log("Tab changée vers :", activeOrderType);
+            
+            // Manage required attribute dynamically
+            if (prescriptionInput) {
+                if (activeOrderType === 'prescription-panel') {
+                    prescriptionInput.required = true;
+                } else {
+                    prescriptionInput.required = false;
+                }
+            }
+        });
+    });
+
+    // --- Prescription Upload Logic ---
+    const prescriptionFile = document.getElementById('prescriptionFile');
+    const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+    const prescriptionPreview = document.getElementById('prescriptionPreview');
+    const previewImg = document.getElementById('previewImg');
+    const removeFile = document.getElementById('removeFile');
+
+    if (prescriptionFile) {
+        prescriptionFile.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    previewImg.src = event.target.result;
+                    uploadPlaceholder.classList.add('hidden');
+                    prescriptionPreview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    if (removeFile) {
+        removeFile.addEventListener('click', () => {
+            prescriptionFile.value = '';
+            uploadPlaceholder.classList.remove('hidden');
+            prescriptionPreview.classList.add('hidden');
+            previewImg.src = '';
+        });
+    }
 
     // --- Product Search & Basket Logic ---
     const basket = [];
@@ -211,15 +268,31 @@ document.addEventListener('DOMContentLoaded', () => {
             let orderSummaryText = '';
 
             if (activeOrderType === 'prescription-panel') {
-                // Fallback if needed, though hidden for now
-                const notes = 'Aucune';
+                if (prescriptionFile && prescriptionFile.files.length === 0) {
+                    alert('Veuillez charger votre ordonnance.');
+                    return;
+                }
+                const notes = document.getElementById('prescriptionNotes') ? document.getElementById('prescriptionNotes').value : 'Aucune';
+                const previewSrc = previewImg.src;
                 orderSummaryHtml = `
                     <div class="recap-row">
                         <span class="label">Type de commande :</span>
-                        <span>Ordonnance</span>
+                        <span>Ordonnance (Photo)</span>
+                    </div>
+                    ${previewSrc ? `
+                    <div class="recap-row" style="flex-direction: column; align-items: flex-start; gap: 10px;">
+                        <span class="label">Aperçu de l'ordonnance :</span>
+                        <div style="width: 100%; max-height: 200px; overflow: hidden; border-radius: 8px; border: 1px solid var(--border-color);">
+                            <img src="${previewSrc}" style="width: 100%; height: auto; display: block;" alt="Ordonnance">
+                        </div>
+                    </div>
+                    ` : ''}
+                    <div class="recap-row">
+                        <span class="label">Notes :</span>
+                        <span>${notes}</span>
                     </div>
                 `;
-                orderSummaryText = `*Type:* Ordonnance`;
+                orderSummaryText = `*Type:* Ordonnance\n*Notes:* ${notes}`;
             } else {
                 if (basket.length === 0) {
                     alert('Votre panier est vide. Veuillez choisir des produits.');
@@ -314,14 +387,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 const deliveryMethodStr = deliveryEl ? deliveryEl.value : 'pickup';
                 const deliveryAddressVal = document.getElementById('deliveryAddress') ? document.getElementById('deliveryAddress').value : '';
                 const paymentOption = 'Paiement lors du retrait à la Pharmacie';
-                const prescriptionNotes = '';
+                const prescriptionNotes = document.getElementById('prescriptionNotes') ? document.getElementById('prescriptionNotes').value : '';
                 const totalPrice = basketTotalAmount ? basketTotalAmount.textContent : '0';
 
                 console.log("Données collectées :", { fullName, phone, deliveryMethodStr, paymentOption, totalPrice });
 
-                // 1. Handle Prescription Upload (Bypassed)
+                // 1. Handle Prescription Upload if needed
                 let finalPrescriptionUrl = null;
-                if (false) {
+                if (activeOrderType === 'prescription-panel' && prescriptionFile.files[0]) {
                     const file = prescriptionFile.files[0];
                     const fileExt = file.name.split('.').pop();
                     const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;

@@ -153,7 +153,43 @@
                             <h3 class="form-section-title"><span class="material-symbols-rounded">shopping_bag</span>
                                 Votre Commande</h3>
 
-                            <div class="panel-content" id="list-panel">
+                            <div class="order-type-tabs">
+                                <div class="order-tab active" data-target="prescription-panel">
+                                    <span class="material-symbols-rounded">receipt_long</span>
+                                    <span>Ordonnance</span>
+                                </div>
+                                <div class="order-tab" data-target="list-panel">
+                                    <span class="material-symbols-rounded">list_alt</span>
+                                    <span>Liste de produits</span>
+                                </div>
+                            </div>
+
+                            <div class="tab-content" id="prescription-panel">
+                                <p class="help-text">Veuillez charger la photo de votre ordonnance. Nos pharmaciens l'analyseront pour préparer votre commande.</p>
+                                <div class="form-group">
+                                    <label for="prescriptionFile">Charger mon ordonnance *</label>
+                                    <div class="file-upload-container">
+                                        <input type="file" id="prescriptionFile" accept="image/*" class="file-input">
+                                        <div class="file-upload-placeholder" id="uploadPlaceholder">
+                                            <span class="material-symbols-rounded">cloud_upload</span>
+                                            <p>Cliquez ou glissez une image ici</p>
+                                        </div>
+                                        <div id="prescriptionPreview" class="hidden">
+                                            <img src="" alt="Aperçu ordonnance" id="previewImg">
+                                            <button type="button" class="btn-remove-file" id="removeFile">
+                                                <span class="material-symbols-rounded">close</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="prescriptionNotes">Instructions supplémentaires</label>
+                                    <textarea id="prescriptionNotes" rows="3"
+                                        placeholder="Précisez ici si vous avez besoin de génériques, ou d'autres détails..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="tab-content hidden" id="list-panel">
                                 <div class="form-group">
                                     <label for="productSearch">Rechercher des produits</label>
                                     <div class="search-selection-wrapper">
