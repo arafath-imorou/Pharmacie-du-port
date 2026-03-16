@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Ensure preloader is gone even if something hangs
     window.addEventListener('load', dismissPreloader);
-    setTimeout(dismissPreloader, 3000); // Max wait 3 seconds
+    setTimeout(dismissPreloader, 1500); // Reduced from 3s to 1.5s for faster mobile entry
 
     // Navigation logic handled by inline onclick in HTML for maximum compatibility
     // (See .mobile-menu-btn in HTML files)

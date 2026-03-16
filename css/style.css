@@ -1,8 +1,4 @@
-/* Google Fonts: Inter - font-display:swap prevents invisible text during load */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
-/* Material Symbols */
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block');
+/* Fonts are now handled via <link> tags in HTML for better parallel loading */
 
 /* ============================================================
    PERFORMANCE OPTIMIZATIONS
@@ -52,7 +48,7 @@ img {
     justify-content: center;
     align-items: center;
     z-index: 9999;
-    transition: opacity 0.5s ease, visibility 0.5s;
+    transition: opacity 0.3s ease, visibility 0.3s;
 }
 
 #site-preloader.fade-out {
@@ -61,18 +57,14 @@ img {
     pointer-events: none;
 }
 
-/* Fix FOIT/FOUC: Keep content hidden but preloader visible */
+/* Removed restrictive visibility:hidden to allow progressive rendering on mobile */
 body.loading #site-preloader {
     visibility: visible;
     opacity: 1;
 }
 
-body.loading > *:not(#site-preloader):not(script) {
-    visibility: hidden;
-}
-
 body.loading {
-    overflow: hidden; /* Prevent scrolling during load */
+    overflow: hidden; /* Prevent scrolling during initial load */
 }
 
 /* Material Symbols Rendering Strategy: 
