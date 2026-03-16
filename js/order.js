@@ -324,11 +324,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const deliveryEl = document.getElementById('deliveryMethod');
-            const paymentEl = document.getElementById('paymentMethod');
 
             const deliveryOption = (deliveryEl && deliveryEl.selectedOptions[0]) ? deliveryEl.selectedOptions[0].text : 'N/A';
             const address = document.getElementById('deliveryAddress') ? document.getElementById('deliveryAddress').value : '';
-            const payment = (paymentEl && paymentEl.selectedOptions[0]) ? paymentEl.selectedOptions[0].text : 'N/A';
+            const payment = 'Paiement lors du retrait à la Pharmacie';
 
             const deliveryText = (deliveryEl && deliveryEl.value === 'pickup') ?
                 'Retrait en pharmacie (Gratuit)' :
@@ -388,8 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const deliveryEl = document.getElementById('deliveryMethod');
                 const deliveryMethodStr = deliveryEl ? deliveryEl.value : 'pickup';
                 const deliveryAddressVal = document.getElementById('deliveryAddress') ? document.getElementById('deliveryAddress').value : '';
-                const paymentEl = document.getElementById('paymentMethod');
-                const paymentOption = (paymentEl && paymentEl.selectedOptions[0]) ? paymentEl.selectedOptions[0].text : 'N/A';
+                const paymentOption = 'Paiement lors du retrait à la Pharmacie';
                 const prescriptionNotes = document.getElementById('prescriptionNotes') ? document.getElementById('prescriptionNotes').value : '';
                 const totalPrice = basketTotalAmount ? basketTotalAmount.textContent : '0';
 
