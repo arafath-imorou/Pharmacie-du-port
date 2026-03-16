@@ -226,24 +226,34 @@
                                 Retrait et Paiement</h3>
                             <div class="grid grid-2">
                                 <div class="form-group">
-                                    <label>Mode de réception *</label>
-                                    <div style="padding: 0.75rem 1rem; background: #f8f9fa; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 0.95rem; font-weight: 500;">
-                                        Retrait rapide en pharmacie (Gratuit)
-                                    </div>
-                                    <input type="hidden" id="deliveryMethod" value="pickup">
+                                    <label for="deliveryMethod">Mode de réception *</label>
+                                    <select id="deliveryMethod" required>
+                                        <option value="pickup">Retrait rapide en pharmacie (Gratuit)</option>
+                                        <option value="delivery">Livraison à domicile</option>
+                                    </select>
                                 </div>
-                                <div class="form-group">
-                                    <label>Mode de paiement</label>
-                                    <div class="payment-methods-list" style="margin-top: 0.5rem; padding: 12px; background: rgba(var(--primary-rgb), 0.05); border-radius: 8px; border-left: 4px solid var(--primary-color);">
-                                        <p style="margin: 0 0 8px 0; font-size: 0.85rem; font-weight: 700; color: var(--primary-color);">Paiement lors du retrait à la Pharmacie :</p>
-                                        <ul style="margin: 0; padding: 0; font-size: 0.85rem; color: var(--text-color); display: grid; grid-template-columns: 1fr 1fr; gap: 8px; list-style: none;">
-                                            <li style="display: flex; align-items: center; gap: 5px;"><span style="color: var(--primary-color); font-size: 1.2rem;">•</span> MTN MOMO PAY</li>
-                                            <li style="display: flex; align-items: center; gap: 5px;"><span style="color: var(--primary-color); font-size: 1.2rem;">•</span> MOOV MONEY</li>
-                                            <li style="display: flex; align-items: center; gap: 5px;"><span style="color: var(--primary-color); font-size: 1.2rem;">•</span> CELTIS CASH</li>
-                                            <li style="display: flex; align-items: center; gap: 5px;"><span style="color: var(--primary-color); font-size: 1.2rem;">•</span> Espèces</li>
-                                            <li style="display: flex; align-items: center; gap: 5px;"><span style="color: var(--primary-color); font-size: 1.2rem;">•</span> Carte bancaire</li>
+                                <div id="addressGroup" class="form-group hidden" style="grid-column: 1 / -1;">
+                                    <label for="deliveryAddress">Adresse précise de livraison *</label>
+                                    <textarea id="deliveryAddress" rows="2" placeholder="Quartier, Maison, Repères précis..."></textarea>
+                                </div>
+                                <div class="form-group" style="grid-column: 1 / -1;">
+                                    <label for="paymentMethod">Mode de paiement préféré *</label>
+                                    <p class="help-text" style="color: var(--primary-color); font-weight: 500; font-size: 0.9rem; margin-bottom: 0.5rem; margin-top: 0;">
+                                        (Le paiement se fait une fois en pharmacie après avoir réçu la confirmation de votre commande via Whatsapp)
+                                    </p>
+                                    <div class="payment-methods-list" style="margin-bottom: 1rem; padding: 10px; background: rgba(var(--primary-rgb), 0.05); border-radius: 8px; border-left: 4px solid var(--primary-color);">
+                                        <p style="margin: 0; font-size: 0.85rem; font-weight: 600; color: #e53935;">Moyens de paiement acceptés :</p>
+                                        <ul style="margin: 5px 0 0 0; padding-left: 20px; font-size: 0.85rem; color: var(--text-color); display: flex; flex-wrap: wrap; gap: 10px; list-style: none;">
+                                            <li><span style="color: var(--primary-color);">●</span> MTN MOMO PAY</li>
+                                            <li><span style="color: var(--primary-color);">●</span> MOOV MONEY</li>
+                                            <li><span style="color: var(--primary-color);">●</span> CELTIS CASH</li>
+                                            <li><span style="color: var(--primary-color);">●</span> Espèces</li>
+                                            <li><span style="color: var(--primary-color);">●</span> Carte bancaire</li>
                                         </ul>
                                     </div>
+                                    <select id="paymentMethod" required>
+                                        <option value="pickup" selected>Paiement lors du retrait à la Pharmacie</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
