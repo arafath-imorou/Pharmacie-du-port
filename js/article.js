@@ -34,32 +34,38 @@ document.addEventListener('DOMContentLoaded', () => {
         const imgUrl = data.image_url || placeholderImg;
 
         mainContent.innerHTML = `
-            <section class="article-hero">
+            <section class="article-content" style="padding-top: 40px;">
                 <div class="container">
-                    <span class="article-category">${data.category}</span>
-                    <h1 class="article-title">${data.title}</h1>
-                    <div class="article-meta">
-                        <span><span class="material-symbols-rounded">calendar_month</span> Publié le ${date}</span>
-                    </div>
-                </div>
-            </section>
+                    <!-- Bouton Retour -->
+                    <a href="blog.html" class="back-link" style="display: inline-flex; align-items: center; gap: 8px; color: var(--primary-color); text-decoration: none; font-weight: 500; margin-bottom: 30px; transition: transform 0.3s ease;">
+                        <span class="material-symbols-rounded">arrow_back</span>
+                        Retour aux conseils
+                    </a>
 
-            <section class="article-content">
-                <div class="container">
-                    <img src="${imgUrl}" alt="${data.title}" class="article-featured-image" onerror="this.src='${placeholderImg}'">
+                    <div style="margin-bottom: 30px;">
+                        <span class="article-category">${data.category}</span>
+                        <h1 class="article-title" style="margin-top: 15px; text-align: left; margin-left: 0;">${data.title}</h1>
+                        <div class="article-meta" style="justify-content: flex-start; margin-top: 10px;">
+                            <span><span class="material-symbols-rounded">calendar_month</span> Publié le ${date}</span>
+                        </div>
+                    </div>
+
+                    <img src="${imgUrl}" alt="${data.title}" class="article-featured-image" style="margin-top: 0;" onerror="this.src='${placeholderImg}'">
+                    
                     <div class="article-body" style="margin-top: 40px;">
                         ${data.content}
                     </div>
                     
-                    <div style="margin-top: 60px; text-align: center;">
-                        <a href="blog.html" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px;">
-                            <span class="material-symbols-rounded">arrow_back</span>
-                            Retour aux conseils
+                    <div style="margin-top: 60px; text-align: center; border-top: 1px solid #eee; padding-top: 40px;">
+                        <a href="blog.html" class="btn btn-outline" style="display: inline-flex; align-items: center; gap: 8px;">
+                            <span class="material-symbols-rounded">grid_view</span>
+                            Voir tous les conseils
                         </a>
                     </div>
                 </div>
             </section>
         `;
+
     }
 
     loadArticle();
