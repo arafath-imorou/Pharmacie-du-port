@@ -1,13 +1,18 @@
 // js/supabaseClient.js
 
-// Supabase project URL
-const supabaseUrl = 'https://csjqynahzbtozuglsnxt.supabase.co';
+// Supabase project URL (ITACORE2)
+const supabaseUrl = 'https://ampktfwcpopkomrsckjm.supabase.co';
 // Supabase public anon key
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNzanF5bmFoemJ0b3p1Z2xzbnh0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MTg4NzgsImV4cCI6MjA4ODM5NDg3OH0.bucVhchmly7yBKAqWYVrryGtoiID4JJUjD07b9s8RZE';
+const supabaseKey = 'sb_publishable_FMDalRvzL6h5zW_4fTXt5g_I4dvctkD';
 
 // Initialize Supabase client
 if (typeof supabase !== 'undefined') {
-    window.supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+    window.supabaseClient = supabase.createClient(supabaseUrl, supabaseKey, {
+        db: {
+            schema: 'pharmacie_port'
+        }
+    });
 } else {
     console.error("La bibliothèque Supabase n'est pas chargée.");
 }
+
