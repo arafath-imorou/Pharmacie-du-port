@@ -3,8 +3,18 @@
 // Database of Pharmaceutical Products (to be fetched from Supabase)
 let productsDb = [];
 
-// Wait for DOM to load
+    // Wait for DOM to load
 document.addEventListener('DOMContentLoaded', async () => {
+
+    // Initialize elements
+    const searchInput = document.getElementById('hero-search-input');
+    const searchBtn = document.getElementById('hero-search-btn');
+    const searchModal = document.getElementById('search-modal');
+    const searchCloseBtn = document.getElementById('search-close');
+    const searchResultsContainer = document.getElementById('search-results-list');
+    const searchTermDisplay = document.getElementById('search-term');
+    const searchCountDisplay = document.getElementById('search-count');
+    const suggestionsContainer = document.getElementById('search-suggestions');
 
     // Fetch all products from Supabase using pagination
     // 1. Try to load from Cache first
@@ -87,17 +97,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error("Erreur de chargement des produits :", err);
     }
 
-    // Existing elements
-    const searchInput = document.getElementById('hero-search-input');
-    const searchBtn = document.getElementById('hero-search-btn');
-
-    // New Modal Elements
-    const searchModal = document.getElementById('search-modal');
-    const searchCloseBtn = document.getElementById('search-close');
-    const searchResultsContainer = document.getElementById('search-results-list');
-    const searchTermDisplay = document.getElementById('search-term');
-    const searchCountDisplay = document.getElementById('search-count');
-    const suggestionsContainer = document.getElementById('search-suggestions');
 
     // Only run if elements exist on page
     if (!searchInput || !searchBtn || !searchModal) return;
