@@ -114,57 +114,86 @@
 </head>
 
 <body>
-    <!-- Top Bar -->
-    <div class="top-bar">
-        <div class="container top-bar-inner">
-            <div class="top-info">
-                <span class="info-item">
-                    <span class="material-symbols-rounded">call</span>
-                    +229 0194013991
-                </span>
-                <span class="info-item">
-                    <span class="material-symbols-rounded">schedule</span>
-                    Ouvert 7j/7 - 07h à 23h (24h/24 en semaine de garde)
-                </span>
-            </div>
-            <div class="top-social">
-                <a href="#" aria-label="Facebook"><span class="social-icon">F</span></a>
-                <a href="#" aria-label="Instagram"><span class="social-icon">I</span></a>
-                <a href="https://wa.me/0194013991" aria-label="WhatsApp"><span class="social-icon">W</span></a>
+    <!-- Header Wrapper -->
+    <div class="header-wrapper">
+        <!-- Top Bar -->
+        <div class="top-bar-v3">
+            <div class="container top-bar-inner">
+                <div class="top-bar-left hide-mobile">
+                    <div class="top-ticker-wrapper">
+                        <div class="top-ticker-content">
+                            <div class="top-info"><span class="material-symbols-rounded"
+                                    style="font-size: 1.2rem;">location_on</span> 79, bd de la Marina, Cotonou
+                            </div>
+                            <div class="top-info"><span class="material-symbols-rounded"
+                                    style="font-size: 1.2rem;">schedule</span> Lundi au Samedi: 07h-23h | 24h/24h, 07 jours sur 07
+                                (Semaine de garde)</div>
+                            <!-- Duplicate for seamless loop -->
+                            <div class="top-info"><span class="material-symbols-rounded"
+                                    style="font-size: 1.2rem;">location_on</span> 79, bd de la Marina, Cotonou
+                            </div>
+                            <div class="top-info"><span class="material-symbols-rounded"
+                                    style="font-size: 1.2rem;">schedule</span> Lundi au Samedi: 07h-23h | 24h/24h, 07 jours sur 07
+                                (Semaine de garde)</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="top-bar-right social-links-small">
+                    <a href="#" aria-label="Facebook" style="font-weight:bold; font-family:serif;">f</a>
+                    <a href="#" aria-label="WhatsApp" style="font-weight:bold; font-family:serif;">w</a>
+                    <a href="#" aria-label="Instagram" style="font-weight:bold; font-family:serif;">in</a>
+                </div>
             </div>
         </div>
+
+        <!-- Middle Bar -->
+        <div class="middle-bar">
+            <div class="container middle-bar-inner">
+                <div class="middle-left phone-block hide-tablet">
+                    <span class="material-symbols-rounded phone-icon">call</span>
+                    <div class="phone-text">
+                        <span class="phone-label">TÉLÉPHONE</span>
+                        <span class="phone-number">0194013991</span>
+                    </div>
+                </div>
+
+                <div class="middle-center logo-container">
+                    <a href="index.html" class="logo-v3">
+                        <div class="logo-icon-wrapper">
+                            <img src="img/LOGO.png" alt="Logo Pharmacie du Port" class="logo-img" width="180"
+                                height="85" fetchpriority="high">
+                        </div>
+                    </a>
+                </div>
+
+                <div class="middle-right action-icons">
+                    <a href="order.html" class="icon-btn"><span
+                            class="material-symbols-rounded">shopping_cart</span></a>
+                    <button class="mobile-menu-btn" aria-label="Menu"
+                        onclick="var n=document.getElementById('mobileNav'); n.classList.toggle('active'); this.querySelector('.material-symbols-rounded').textContent=n.classList.contains('active')?'close':'menu';">
+                        <span class="material-symbols-rounded">menu</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Navigation -->
+        <header class="main-header-v3">
+            <div class="container">
+                <nav class="nav-v3" id="mobileNav">
+                    <ul id="mainMenu">
+                        <li><a href="index.html">Accueil</a></li>
+                        <li><a href="about.html">À Propos</a></li>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="order.html">Commander</a></li>
+                        <li><a href="blog.html" class="active">Conseils Santé</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
     </div>
 
-    <!-- Header / Nav -->
-    <header class="header">
-        <div class="container header-inner">
-            <a href="index.html" class="logo">
-                <img src="img/LOGO.png" alt="Logo Pharmacie du Port" class="logo-img" style="height: 85px;">
-            </a>
-
-            <!-- Menu Toggle Button for Mobile -->
-            <button class="menu-toggle" aria-label="Ouvrir le menu">
-                <span class="material-symbols-rounded">menu</span>
-            </button>
-
-            <!-- Navigation Links -->
-            <nav class="nav">
-                <ul class="nav-list">
-                    <li><a href="index.html" class="nav-link">Accueil</a></li>
-                    <li><a href="about.html" class="nav-link">À Propos</a></li>
-                    <li><a href="services.html" class="nav-link">Services</a></li>
-                    <li><a href="order.html" class="nav-link">Commander</a></li>
-                    <li><a href="blog.html" class="nav-link active">Blog</a></li>
-                    <li><a href="contact.html" class="nav-link">Contact</a></li>
-                </ul>
-            </nav>
-
-            <a href="order.html" class="btn btn-primary d-none-mobile">
-                <span class="material-symbols-rounded">shopping_cart</span>
-                Commander Vite
-            </a>
-        </div>
-    </header>
 
     <main id="dynamic-article-content">
         <div style="text-align: center; padding: 100px 20px; color: var(--text-light);">
