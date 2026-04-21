@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const imgUrl = data.image_url || placeholderImg;
 
         mainContent.innerHTML = `
-            <section class="article-content" style="padding-top: 220px;">
+            <section class="article-content" style="padding-top: 240px !important;">
                 <div class="container">
                     <!-- Bouton Retour -->
                     <a href="blog.html" class="back-link" style="display: inline-flex; align-items: center; gap: 8px; color: var(--primary-color); text-decoration: none; font-weight: 500; margin-bottom: 30px; transition: transform 0.3s ease;">

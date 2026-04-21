@@ -322,6 +322,10 @@ section.bg-light {
     width: 100%;
 }
 
+.article-header {
+    padding-top: 180px !important;
+}
+
 /* Tier 1: Top Bar */
 .top-bar-v3 {
     border-bottom: 1px solid var(--border-color);
