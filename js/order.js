@@ -140,7 +140,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Add to basket
-        const productSuggestions = document.getElementById('productSuggestions');
         if (productSuggestions) {
             productSuggestions.addEventListener('click', (e) => {
                 const item = e.target.closest('.suggestion-item');
