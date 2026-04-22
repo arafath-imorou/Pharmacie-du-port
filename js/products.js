@@ -1,7 +1,7 @@
 // js/products.js
 
-// Database of Pharmaceutical Products (to be fetched from Supabase)
-let productsDb = [];
+// Database of Pharmaceutical Products (Global for cross-script access)
+window.productsDb = [];
 
 // Wait for DOM to load
 document.addEventListener('DOMContentLoaded', async () => {
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const query = searchInput.value.trim().toLowerCase();
         if (query.length === 0) return;
 
-        const results = productsDb.filter(product => {
+        const results = window.productsDb.filter(product => {
             const name = product.name.toLowerCase();
             const category = product.category.toLowerCase();
             return name.startsWith(query) || category.startsWith(query) || name.includes(query) || category.includes(query);
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             suggestionsContainer.innerHTML = '';
             return;
         }
-        const matches = productsDb.filter(p => {
+        const matches = window.productsDb.filter(p => {
             const name = p.name.toLowerCase();
             return name.startsWith(query) || name.includes(query);
         })
@@ -116,8 +116,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (cachedData) {
         try {
-            productsDb = JSON.parse(cachedData);
-            console.log(`${productsDb.length} produits chargés depuis le cache local.`);
+            window.productsDb = JSON.parse(cachedData);
+            console.log(`${window.productsDb.length} produits chargés depuis le cache local.`);
             if (searchInput && searchInput.value) executeSearch();
             // We still need to setup listeners! So don't return here.
         } catch (e) {
@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    if (productsDb.length === 0) {
+    if (window.productsDb.length === 0) {
         try {
             let allProducts = [];
             let from = 0;
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (error) throw error;
                 if (data && data.length > 0) {
                     const mapped = data.map(p => ({
-                        id: p.id, name: p.name, category: p.category, price: p.price, inStock: p.in_stock, description: p.description
+                        id: p.id, name: p.name, category: p.category, price: p.price, inStock: p.in_stock !== false, description: p.description
                     }));
                     allProducts.push(...mapped);
                     if (data.length < 1000) finished = true; else { from += 1000; to += 1000; }
@@ -150,8 +150,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const key = `${p.name.toLowerCase()}|${p.category.toLowerCase()}`;
                 if (!seen.has(key)) { seen.add(key); uniqueProducts.push(p); }
             });
-            productsDb = uniqueProducts;
-            sessionStorage.setItem(CACHE_KEY, JSON.stringify(productsDb));
+            window.productsDb = uniqueProducts;
+            sessionStorage.setItem(CACHE_KEY, JSON.stringify(window.productsDb));
             if (searchInput && searchInput.value) executeSearch();
         } catch (err) {
             console.error("Erreur de chargement des produits :", err);

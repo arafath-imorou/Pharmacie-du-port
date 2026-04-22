@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Access products from the global productsDb (populated by products.js)
     function getProducts() {
-        return typeof productsDb !== 'undefined' ? productsDb : [];
+        return (window.productsDb && window.productsDb.length > 0) ? window.productsDb : [];
     }
 
     // Helper to format price: 1705 -> 1 705 F CFA
@@ -84,6 +84,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function showSuggestions(query = '') {
+        const productSearch = document.getElementById('productSearch');
+        const productSuggestions = document.getElementById('productSuggestions');
+        if (!productSearch || !productSuggestions) return;
+
         const availableProducts = getProducts();
         const filtered = query === ''
             ? availableProducts.slice(0, 500)
@@ -128,25 +132,29 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Hide suggestions when clicking outside
+        const productSuggestions = document.getElementById('productSuggestions');
         document.addEventListener('click', (e) => {
-            if (!productSearch.contains(e.target) && !productSuggestions.contains(e.target)) {
+            if (productSuggestions && !productSearch.contains(e.target) && !productSuggestions.contains(e.target)) {
                 productSuggestions.classList.add('hidden');
             }
         });
 
         // Add to basket
-        productSuggestions.addEventListener('click', (e) => {
-            const item = e.target.closest('.suggestion-item');
-            if (item && item.dataset.id) {
-                const id = item.dataset.id;
-                const product = getProducts().find(p => String(p.id) === String(id));
-                if (product) {
-                    addToBasket(product);
-                    productSearch.value = '';
-                    productSuggestions.classList.add('hidden');
+        const productSuggestions = document.getElementById('productSuggestions');
+        if (productSuggestions) {
+            productSuggestions.addEventListener('click', (e) => {
+                const item = e.target.closest('.suggestion-item');
+                if (item && item.dataset.id) {
+                    const id = item.dataset.id;
+                    const product = getProducts().find(p => String(p.id) === String(id));
+                    if (product) {
+                        addToBasket(product);
+                        productSearch.value = '';
+                        productSuggestions.classList.add('hidden');
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     function addToBasket(product) {
